@@ -1,0 +1,46 @@
+#!/bin/bash -e
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -o,--outputdir: 
+    "
+}
+
+dl_nctc_db() {
+    job=$OUTPUTDIR/DLDB_NCTC.job
+    cp $jobt_1 $job
+    if [[ -z $OUTPUTDIR/$NCTCNAME ]]; then
+        CURRMAX=$(tail -1 $OUTPUTDIR/$NCTCNAME | cut -f2 | cut -d' ' -f2)
+        echo "$scriptdir/nctc_trawler -s 1 -min $CURRMAX -o $OUTPUTDIR/$NCTCNAME" >> $job
+    else
+        echo "$scriptdir/nctc_trawler -s 1 -o $OUTPUTDIR/$NCTCNAME" >> $job
+    fi
+}
+
+ERROR="./microtrawleranalysis_"$(date +'%Y:%m:%d::%H:%M:%S')"_run.stderr"
+main() {
+    OUTPUTDIR=
+    NCTCNAME=
+    CIPNAME=
+    for i in "$@"; do
+    case $i in
+        -o|--outputdir)
+        OUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+}
+
+main "$@" 2>&1 | tee -a "$ERROR"

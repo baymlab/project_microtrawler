@@ -1,0 +1,9 @@
+#!/bin/bash
+
+tooldir="/n/data1/hms/dbmi/baym/arya/tools"
+
+projectdir="/n/data1/hms/dbmi/baym/arya/projects/project_microtrawler"
+scriptdir="$projectdir/helper_scripts"
+
+jobdir="/n/data1/hms/dbmi/baym/arya/job_templates"
+jobt_0="$jobdir/microt_1.jobtemp"
