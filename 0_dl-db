@@ -6,30 +6,51 @@ source ./funcs
 
 usage() {
     echo "
-    -o,--outputdir: 
+    -o,--outputdir: output directory for databases. default is /n/scratch3/users/a/ak586/microtrawler/0_databases
+    -n,--nctc: output filename for NCTC db. default is nctc_db.csv
+    -c,--cip: output filename for CIP db. default is cip_db.csv
     "
 }
 
 dl_nctc_db() {
     job=$OUTPUTDIR/DLDB_NCTC.job
-    cp $jobt_1 $job
-    if [[ -z $OUTPUTDIR/$NCTCNAME ]]; then
+    cp $jobt_0 $job
+    sed -i "2i #SBATCH -o $OUTPUTDIR/JOBOUTPUT_dl-NCTC-db" $job
+    if [[ -s $OUTPUTDIR/$NCTCNAME ]]; then
         CURRMAX=$(tail -1 $OUTPUTDIR/$NCTCNAME | cut -f2 | cut -d' ' -f2)
-        echo "$scriptdir/nctc_trawler -s 1 -min $CURRMAX -o $OUTPUTDIR/$NCTCNAME" >> $job
+        echo "$projectdir/nctc_trawler -s 1 --min $CURRMAX -o $OUTPUTDIR/$NCTCNAME --scriptdir $scriptdir" >> $job
     else
-        echo "$scriptdir/nctc_trawler -s 1 -o $OUTPUTDIR/$NCTCNAME" >> $job
+        echo "$projectdir/nctc_trawler -s 1 -o $OUTPUTDIR/$NCTCNAME --scriptdir $scriptdir" >> $job
     fi
+    echo $job
 }
 
-ERROR="./microtrawleranalysis_"$(date +'%Y:%m:%d::%H:%M:%S')"_run.stderr"
+dl_cip_db() {
+    job=$OUTPUTDIR/DLDB_CIP.job
+    cp $jobt_0 $job
+    sed -i "2i #SBATCH -o $OUTPUTDIR/JOBOUTPUT_dl-CIP-db" $job
+    echo "$projectdir/cip_trawler -o $OUTPUTDIR/$CIPNAME --scriptdir $scriptdir" >> $job
+    echo $job
+}
+
 main() {
-    OUTPUTDIR=
-    NCTCNAME=
-    CIPNAME=
+    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/0_databases"
+    NCTCNAME="nctc_db.csv"
+    CIPNAME="cip_db.csv"
     for i in "$@"; do
     case $i in
         -o|--outputdir)
         OUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -n|--nctc)
+        NCTCNAME="$2"
+        shift
+        shift
+        ;;
+        -c|--cip)
+        CIPNAME="$2"
         shift
         shift
         ;;
@@ -41,6 +62,10 @@ main() {
         ;;
     esac
     done
-}
 
-main "$@" 2>&1 | tee -a "$ERROR"
+    mkdir -p $OUTPUTDIR
+    nctc_job=$(dl_nctc_db)
+    cip_job=$(dl_cip_db)
+    echo ""$(sbatch $nctc_job | cut -d' '  -f4)":"$(sbatch $cip_job | cut -d' '  -f4)""
+}
+main "$@"
