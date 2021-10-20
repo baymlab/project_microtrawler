@@ -1,0 +1,39 @@
+#!/bin/bash -e
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo ""
+}
+
+
+main() {
+    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler"
+    for i in "$@"; do
+    case $i in
+        -o|--outputdir)
+        OUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+    
+    mkdir -p $OUTPUTDIR
+    newl
+    log " " " " "Running Microtrawler pipeline"
+    log "Output Directory" "$OUTPUTDIR"
+    newl
+    dbjobnums=$(./0_dl-db -o "$OUTPUTDIR/0_databases")
+    log "Job Submitted" "Databases being downloaded $dbjobnums"
+}
+
+main "$@"
