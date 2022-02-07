@@ -7,9 +7,13 @@ log() {
 
 newl() {
   printf '\n' >&2
-
 }
+
 die() {
     log "$1" "$2" "${3:-ERROR}"
     exit 2
+}
+
+upper() {
+    printf '%s\n' "${1^^}"
 }

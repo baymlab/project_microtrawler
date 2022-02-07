@@ -18,6 +18,11 @@ main() {
         shift
         shift
         ;;
+        -s|--step)
+        STEP="$2"
+        shift
+        shift
+        ;;
         -h|--help)
         usage
         exit
@@ -30,10 +35,31 @@ main() {
     mkdir -p $OUTPUTDIR
     newl
     log " " " " "Running Microtrawler pipeline"
-    log "Output Directory" "$OUTPUTDIR"
-    newl
-    dbjobnums=$(./0_dl-db -o "$OUTPUTDIR/0_databases")
-    log "Job Submitted" "Databases being downloaded $dbjobnums"
+    log "Analysis Directory" "$OUTPUTDIR"
+    if [[ $STEP = "0" ]]; then
+        log "Downloading up-to-date culture reference databases" "" "Step 0"
+        dbjobnums=$(./0_dl-db -o "$OUTPUTDIR/0_databases")
+        log "Download database jobs submitted" "$dbjobnums"
+        newl
+    fi
+
+    if [[ $STEP < "2" ]]; then
+        log "Downloading assembled sequences for isolates" "" "Step 1"
+        seqjobnums=$(./1_dl-seqs -i "$OUTPUTDIR/0_databases" -o "$OUTPUTDIR/1_sequences" --dependency $dbjobnums)
+        log "Download sequence jobs submitted" "$seqjobnums"
+    fi
+
+    if [[ $STEP < "3" ]]; then
+        log "Searching for antibiotic resistance" "" "Step 2"
+        rgijobnums=$(./2_look-for-resistance -i "$OUTPUTDIR/1_sequences" -o "$OUTPUTDIR/2_rgi" --dependency $seqjobnums -c 50)
+        log "Antibiotic resistance jobs submitted" "$seqjobnums"
+    fi
+
+    if [[ $STEP < "4" ]]; then
+        log "Performing meta-analysis" "" "Step 3"
+        ./3_analyze -i "$OUTPUTDIR/2_rgi" -o "$OUTPUTDIR/3_analysis" -d "$OUTPUTDIR/0_databases" -f "$OUTPUTDIR/1_sequences"
+        log "Analysis pipeline jobs submitted" "$analysisjobnums"
+    fi
 }
 
 main "$@"

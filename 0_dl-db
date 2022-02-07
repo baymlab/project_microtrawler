@@ -18,9 +18,9 @@ dl_nctc_db() {
     sed -i "2i #SBATCH -o $OUTPUTDIR/JOBOUTPUT_dl-NCTC-db" $job
     if [[ -s $OUTPUTDIR/$NCTCNAME ]]; then
         CURRMAX=$(tail -1 $OUTPUTDIR/$NCTCNAME | cut -f2 | cut -d' ' -f2)
-        echo "$projectdir/nctc_trawler -s 1 --min $CURRMAX -o $OUTPUTDIR/$NCTCNAME --scriptdir $scriptdir" >> $job
+        echo "$projectdir/nctc_trawler -s 0.09 --min $CURRMAX -o $OUTPUTDIR/$NCTCNAME --scriptdir $scriptdir" >> $job
     else
-        echo "$projectdir/nctc_trawler -s 1 -o $OUTPUTDIR/$NCTCNAME --scriptdir $scriptdir" >> $job
+        echo "$projectdir/nctc_trawler -s 0.09 -o $OUTPUTDIR/$NCTCNAME --scriptdir $scriptdir" >> $job
     fi
     echo "$scriptdir/nctc/extract_dates $OUTPUTDIR/$NCTCNAME > $OUTPUTDIR/nctc_dates" >> $job
     echo "grep -v '\-1' $OUTPUTDIR/nctc_dates | tr -d ' ' > $OUTPUTDIR/nctc_dates_nonull" >> $job

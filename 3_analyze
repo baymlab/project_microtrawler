@@ -1,0 +1,132 @@
+#!/bin/bash -e
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -i,--inputdir : input directory of output from step 2. default is /n/scratch3/users/a/ak586/microtrawler/2_rgi
+    -o,--outputdir: base output directory for rgi. default is /n/scratch3/users/a/ak586/microtrawler/3_analysis
+    -d,--dbdir: input directory of output from step 0. default is /n/scratch3/users/a/ak586/microtrawler/0_databases
+    -f,--fastadir: input directory of output from step 1. default is /n/scratch3/users/a/ak586/microtrawler/1_sequences
+    "    
+}
+
+get_chromosome_info() {
+    rm -f $OUTPUTDIR/seqreport_tmp 2> /dev/null
+    for sqr in $(fd -e '.txt' --base-directory $FASTADIR | sort); do
+        [ -z "$seqreportheader" ] && seqreportheader=$(echo -e "path\tAssembly_No\t$(head -1 $FASTADIR/$sqr)")
+        sed '1d' $FASTADIR/$sqr | awk -F '\t' '{print NR"\t"$0}' | sed "s:^:$sqr\t:g" >> $OUTPUTDIR/seqreport_tmp
+    done 
+    sed -i "1i $seqreportheader" $OUTPUTDIR/seqreport_tmp
+    mv $OUTPUTDIR/seqreport_tmp $OUTPUTDIR/seqreports
+}
+
+
+merge_rgi_output() {
+    merged_output=$OUTPUTDIR/all_rgiout_$(date -u +"%Y-%m-%d")
+    fd -a "*rgi_out.txt" --glob $INPUTDIR > $OUTPUTDIR/rgi_filelist
+    head -1 $(head -1 $OUTPUTDIR/rgi_filelist) > $OUTPUTDIR/rgihead
+    awk -F '\t' '{printf "Accession_Number\tStrain\tAssembly_No\tYear_Cultured\t%s\n", $0}' $OUTPUTDIR/rgihead > $merged_output
+    rm $OUTPUTDIR/rgihead
+
+    # do NCTC shit
+    cut -f2- $DBDIR/nctc_db.csv | sed 's/ //' > $OUTPUTDIR/nctc_nospace.tsv
+    # turns out ALL of gbk/refseq is included in ENA!
+    for f in $(fd "rgi_out" -e '.txt' --base-directory $INPUTDIR | grep NCTC | grep ena); do
+        acc_num=$(echo $f | cut -d'/' -f3)
+        strain=$(grep -w "$acc_num" $OUTPUTDIR/nctc_nospace.tsv | cut -f2)
+        if [ ! $(echo "$strain" | wc -l) -eq 1 ]; then 
+            echo "More than one strain found for $acc_num, using the first one"
+            strain=$(echo "$strain" | head -1)
+        fi
+        assembly=$(echo $f | cut -d'/' -f4)
+        assembly_num=$(echo $assembly | cut -d'_' -f2)
+        if [ $assembly_num == "assembly" ]; then 
+            assembly_num=1
+        else
+            #echo $assembly_num
+            ((assembly_num++))
+        fi
+
+        #seqreport=$(fd . -e .txt -p "NCTC/*/$acc_num/" $FASTADIR)
+        #echo $seqreport
+        #if [ -f $seqreport ]; then
+        #    for sr in $seqreport; do
+        #        genomic_pos=$(sed "$assembly_num!d" $sr | cut -f6)
+        #    done
+        #else
+        #    genomic_pos="Chromosome"
+        #fi
+        yearcult=$(grep -w "$acc_num" $DBDIR/*_dates_nonull | cut -f2)
+
+
+        rgifile="$INPUTDIR/$f"
+        echo "$f"
+        echo "$acc_num"
+        echo "$strain"
+        echo "$assembly_num"
+        #echo "$genomic_pos"
+        echo "$yearcult"
+        echo ""
+
+        linecount=$(wc -l $rgifile | awk '{print $1}')
+        if [ "$linecount" -eq "1" ]; then
+            awk -F '\t' -v acc_num="$acc_num" \
+                        -v strain="$strain" \
+                        -v assembly_num="$assembly_num" \
+                        -v yearcult="$yearcult" \
+                        '{printf "%s\t%s\t%s\t%s\tNoAb\n", acc_num, strain, assembly_num, yearcult}' $rgifile >> $merged_output
+        else
+            awk -F '\t' -v acc_num="$acc_num" \
+                        -v strain="$strain" \
+                        -v assembly_num="$assembly_num" \
+                        -v yearcult="$yearcult" \
+                        '{if(NR!=1){printf "%s\t%s\t%s\t%s\t%s\n", acc_num, strain, assembly_num, yearcult, $0}}' $rgifile >> $merged_output
+        fi
+        #exit
+    done
+}
+
+main() {
+    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/2_rgi"
+    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/3_analysis"
+    DBDIR="/n/scratch3/users/a/ak586/microtrawler/0_databases"
+    FASTADIR="/n/scratch3/users/a/ak586/microtrawler/1_sequences"
+    for i in "$@"; do
+    case $i in
+        -i|--inputdir)
+        INPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -d|--dbdir)
+        DBDIR="$2"
+        shift
+        shift
+        ;;
+        -f|--fastadir)
+        FASTADIR="$2"
+        shift
+        shift
+        ;;
+        -o|--outputdir)
+        OUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+
+    mkdir -p $OUTPUTDIR
+    merge_rgi_output
+    get_chromosome_info
+}
+main "$@"
