@@ -1,0 +1,97 @@
+#!/bin/bash -e
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -i,--inputdir : input directory of step 0. default is /n/scratch3/users/a/ak586/microtrawler/0_databases
+    -o,--outputdir: output directory for sequences. default is /n/scratch3/users/a/ak586/microtrawler/1_sequences
+    "
+}
+
+dl_genbank() {
+    DB=$1
+    INPUTFILE=$2
+    job=$OUTPUTDIR/DLGBK-"$DB"_microtrawler.job
+    cp $jobt_1a $job
+    sed -i "2i #SBATCH -o $OUTPUTDIR/JOBOUTPUT_dl-$DB-genbank" $job
+    echo "$scriptdir/generic/download_genbank -i $INPUTFILE -o $OUTPUTDIR/"$DB"/genbank -t $DB" >> $job
+    echo $job
+}
+
+dl_refseq() {
+    DB=$1
+    INPUTFILE=$2
+    job=$OUTPUTDIR/DLREFSEQ-"$DB"_microtrawler.job
+    cp $jobt_1a $job
+    sed -i "2i #SBATCH -o $OUTPUTDIR/JOBOUTPUT_dl-$DB-refseq" $job
+    echo "$scriptdir/generic/download_refseq -i $INPUTFILE -o $OUTPUTDIR/"$DB"/refseq -t $DB" >> $job
+    echo $job
+}
+
+dl_ena() {
+    DB=$1
+    INPUTFILE=$2
+    job=$OUTPUTDIR/DLENA-"$DB"_microtrawler.job
+    cp $jobt_1 $job
+    sed -i "2i #SBATCH -o $OUTPUTDIR/JOBOUTPUT_dl-$DB-ena" $job
+    echo "$scriptdir/generic/download_ena -i $INPUTFILE -o $OUTPUTDIR/"$DB"/ena -t $DB" >> $job
+    echo $job
+}
+
+main() {
+    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/0_databases"
+    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/1_sequences"
+    for i in "$@"; do
+    case $i in
+        -i|--inputdir)
+        INPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -o|--outputdir)
+        OUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -d|--dependency)
+        DEPENDENCY="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+
+    mkdir -p $OUTPUTDIR
+    for i in $INPUTDIR/*_dates_nonull_onlystrain; do
+        DB="$(upper $(echo $(basename $i) | cut -f1 -d'_'))"
+
+        job_genbank=$(dl_genbank $DB $i)
+        job_ena=$(dl_ena $DB $i)
+        job_refseq=$(dl_refseq $DB $i)
+
+        if [ ! -z $DEPENDENCY ]; then
+            jobid_genbank="$(sbatch --dependency=afterok:"$DEPENDENCY" $job_genbank | cut -f4 -d' ')"
+            jobid_ena="$(sbatch --dependency=afterok:"$DEPENDENCY"  $job_ena | cut -f4 -d' ')"
+            jobid_refseq="$(sbatch --dependency=afterok:"$DEPENDENCY" $job_refseq | cut -f4 -d' ')"
+
+        else
+            jobid_genbank="$(sbatch $job_genbank | cut -f4 -d' ')"
+            jobid_ena="$(sbatch $job_ena | cut -f4 -d' ')"
+            jobid_refseq="$(sbatch $job_refseq | cut -f4 -d' ')"
+        fi
+        joblist+="$jobid_genbank:"
+        joblist+="$jobid_ena:"
+        joblist+="$jobid_refseq:"
+    done
+    echo $joblist
+}
+main "$@"

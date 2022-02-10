@@ -1,0 +1,13 @@
+#!/bin/bash
+
+tooldir="/n/data1/hms/dbmi/baym/arya/tools"
+
+firefox="./hi"
+projectdir="/n/data1/hms/dbmi/baym/arya/projects/MicroTrawler"
+scriptdir="$projectdir/helper_scripts"
+
+jobdir="/n/data1/hms/dbmi/baym/arya/job_templates"
+jobt_0="$jobdir/microt_0.jobtemp"
+jobt_1="$jobdir/microt_1.jobtemp"
+jobt_1a="$jobdir/microt_1a.jobtemp"
+jobt_2="$jobdir/microt_2.jobtemp"

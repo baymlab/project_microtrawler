@@ -1,0 +1,19 @@
+#!/bin/bash
+
+log() {
+  lcol='\033[1;33m' lcol2='\033[1;36m' lclr='\033[m'
+  printf '%b%s %b%s%b %s\n' "$lcol" "${3:-->}" "${lclr}${2:+$lcol2}" "$1" "$lclr" "$2" >&2
+}
+
+newl() {
+  printf '\n' >&2
+}
+
+die() {
+    log "$1" "$2" "${3:-ERROR}"
+    exit 2
+}
+
+upper() {
+    printf '%s\n' "${1^^}"
+}

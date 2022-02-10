@@ -1,0 +1,81 @@
+#!/bin/bash -e
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -o,--outputdir: output directory for databases. default is /n/scratch3/users/a/ak586/microtrawler/0_databases
+    -n,--nctc: output filename for NCTC db. default is nctc_db.csv
+    -c,--cip: output filename for CIP db. default is cip_db.csv
+    "
+}
+
+dl_nctc_db() {
+    job=$OUTPUTDIR/DLDB-NCTC_microtrawler.job
+    cp $jobt_0 $job
+    sed -i "2i #SBATCH -o $OUTPUTDIR/JOBOUTPUT_dl-NCTC-db" $job
+    if [[ -s $OUTPUTDIR/$NCTCNAME ]]; then
+        CURRMAX=$(tail -1 $OUTPUTDIR/$NCTCNAME | cut -f2 | cut -d' ' -f2)
+        echo "$projectdir/nctc_trawler -s 0.09 --min $CURRMAX -o $OUTPUTDIR/$NCTCNAME --scriptdir $scriptdir" >> $job
+    else
+        echo "$projectdir/nctc_trawler -s 0.09 -o $OUTPUTDIR/$NCTCNAME --scriptdir $scriptdir" >> $job
+    fi
+    echo "$scriptdir/nctc/extract_dates $OUTPUTDIR/$NCTCNAME > $OUTPUTDIR/nctc_dates" >> $job
+    echo "grep -v '\-1' $OUTPUTDIR/nctc_dates | tr -d ' ' > $OUTPUTDIR/nctc_dates_nonull" >> $job
+    echo "cut -f1 $OUTPUTDIR/nctc_dates_nonull > $OUTPUTDIR/nctc_dates_nonull_onlystrain" >> $job
+    #echo "grep -v '\-1' $OUTPUTDIR/nctc_dates | tr -d ' ' | awk '{if(\$2<=1940){print \$0}}' > $OUTPUTDIR/nctc_ancient_strains" >> $job
+    #echo "cut -f1 $OUTPUTDIR/nctc_ancient_strains > $OUTPUTDIR/nctc_ancient_strains_nodate" >> $job
+    echo $job
+}
+
+dl_cip_db() {
+    job=$OUTPUTDIR/DLDB-CIP_microtrawler.job
+    cp $jobt_0 $job
+    sed -i "2i #SBATCH -o $OUTPUTDIR/JOBOUTPUT_dl-CIP-db" $job
+    echo "$projectdir/cip_trawler -o $OUTPUTDIR/$CIPNAME --scriptdir $scriptdir" >> $job
+    echo "$scriptdir/cip/extract_dates $OUTPUTDIR/$CIPNAME > $OUTPUTDIR/cip_dates" >> $job
+    echo "grep -v '\-1' $OUTPUTDIR/cip_dates | tr -d ' ' > $OUTPUTDIR/cip_dates_nonull" >> $job
+    echo "cut -f1 $OUTPUTDIR/cip_dates_nonull > $OUTPUTDIR/cip_dates_nonull_onlystrain" >> $job
+    #echo "grep -v '\-1' $OUTPUTDIR/cip_dates | tr -d ' ' | awk '{if(\$2<=1940){print \$0}}' > $OUTPUTDIR/cip_ancient_strains" >> $job
+    #echo "cut -f1 $OUTPUTDIR/cip_ancient_strains > $OUTPUTDIR/cip_ancient_strains_nodate" >> $job
+    echo $job
+}
+
+main() {
+    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/0_databases"
+    NCTCNAME="nctc_db.csv"
+    CIPNAME="cip_db.csv"
+    for i in "$@"; do
+    case $i in
+        -o|--outputdir)
+        OUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -n|--nctc)
+        NCTCNAME="$2"
+        shift
+        shift
+        ;;
+        -c|--cip)
+        CIPNAME="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+
+    mkdir -p $OUTPUTDIR
+    nctc_job=$(dl_nctc_db)
+    cip_job=$(dl_cip_db)
+    echo ""$(sbatch $nctc_job | cut -d' '  -f4)":"$(sbatch $cip_job | cut -d' '  -f4)""
+}
+main "$@"
