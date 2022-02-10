@@ -1,0 +1,182 @@
+#!/bin/bash -e
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -i,--inputdir : input directory of output from step 1. default is /n/scratch3/users/a/ak586/microtrawler/1_sequences
+    -o,--outputdir: base output directory for rgi. default is /n/scratch3/users/a/ak586/microtrawler/2_rgi
+    -c,--commands: number of RGI commands to submit per job. default is 50
+    "
+}
+
+build_files() {
+    rm -f $BASEOUTPUTDIR/output_dirs 2> /dev/null
+    fd "*.fa" -a $INPUTDIR --glob | sort > $BASEOUTPUTDIR/input_fastas
+    for i in $(fd "*.fa" --base-directory $INPUTDIR --glob | sort)
+    do 
+        x=$(dirname $(dirname $i))
+        y=$(basename $i .fa)
+        echo "$BASEOUTPUTDIR/$x/$y" >> $BASEOUTPUTDIR/output_dirs
+    done
+}
+
+create_rgi_jobs() {
+    mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
+    mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
+    rm -r "$BASEOUTPUTDIR/jobs" 2> /dev/null
+    mkdir -p "$BASEOUTPUTDIR/jobs/outputs"
+
+    jobctr=0
+    rgictr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}"
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        output_basename="$outdir"/"$fasta_fname"_abr-search
+        if [ -s "$output_basename".rgi_out.txt ]; then
+            log "Looks like $fasta has already been analyzed! Skipping."
+        else
+            log "Adding $fasta to be analyzed"
+            if [ $rgictr -eq 0 ] || [ $rgictr -eq $1 ]; then
+                rgictr=1
+                job="$BASEOUTPUTDIR/jobs/FINDRESISTANCE_$jobctr-microtrawler.job"
+                cp $jobt_2 $job
+                sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-find-resistance" $job
+                echo "
+                if [ ! -s $BASEOUTPUTDIR/card/card.json ]; then
+                    wget --output-document "$BASEOUTPUTDIR/carddb" https://card.mcmaster.ca/latest/data
+                    mkdir -p $BASEOUTPUTDIR/data/rgi
+                    tar -xvf $BASEOUTPUTDIR/carddb --directory $BASEOUTPUTDIR/data/rgi
+                fi" >> $job
+                echo "rgi load --card_json $BASEOUTPUTDIR/data/rgi/card.json" >> $job
+                ((jobctr++)) || true
+            fi
+            echo "rgi main -i "$fasta" -o "$output_basename".rgi_out --input_type contig --exclude_nudge --clean --split_prodigal_jobs -n 12" >> $job
+            echo ""$fasta" > $outdir/fasta_analyzed" >> $job
+            echo "echo "Finished analyzing $fasta"" >> $job
+            ((rgictr++)) || true
+        fi
+    done
+}
+
+create_integron_jobs() {
+    mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
+    mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
+    jobctr=0
+    integctr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}"
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        if [ -s "$outdir"/mysequences.integrons ]; then
+            log "Looks like $fasta has already been analyzed! Skipping."
+        else
+            log "Adding $fasta to be analyzed"
+            if [ $integctr -eq 0 ] || [ $integctr -eq $1 ]; then
+                integctr=1
+                job="$BASEOUTPUTDIR/jobs/FINDINTEGRONS_$jobctr-microtrawler.job"
+                cp $jobt_2 $job
+                sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-find-integrons" $job
+                ((jobctr++)) || true
+            fi
+            echo "integron_finder --outdir $outdir $fasta" >> $job
+            echo "echo "Finished analyzing $fasta"" >> $job
+            ((integctr++)) || true
+        fi
+    done
+}
+
+create_crispr_jobs() {
+    mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
+    mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
+    jobctr=0
+    crisprctr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}/cctyper"
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        if [ -s "$outdir/CRISPR_Cas.tab" ]; then
+            log "Looks like $fasta has already been analyzed! Skipping."
+        else
+            log "Adding $fasta to be analyzed"
+            if [ $crisprctr -eq 0 ] || [ $crisprctr -eq $1 ]; then
+                crisprctr=1
+                job="$BASEOUTPUTDIR/jobs/FINDCRISPR_$jobctr-microtrawler.job"
+                cp $jobt_2 $job
+                sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-find-crispr" $job
+                ((jobctr++)) || true
+            fi
+            echo "cctyper $fasta $outdir" >> $job
+            echo "echo "Finished analyzing $fasta"" >> $job
+            ((crisprctr++)) || true
+        fi
+    done
+}
+
+submit_jobs() {
+    joblist=""
+    if [ -z $DEPENDENCY ]; then
+        for j in $(fd -a "FINDRESISTANCE_*-microtrawler.job" --glob $BASEOUTPUTDIR); do
+            jobid=$(sbatch $j | cut -d' ' -f4)
+            joblist+="$jobid:"
+        done
+    else
+        for j in $(fd -a "FINDRESISTANCE_*-microtrawler.job" --glob $BASEOUTPUTDIR); do
+            jobid=$(sbatch --dependency=afterok:"$DEPENDENCY" $j | cut -d' ' -f4)
+            joblist+="$jobid:"
+        done
+    fi
+    echo $joblist
+}
+
+main() {
+    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/1_sequences"
+    BASEOUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/2_rgi"
+    COMMANDS=50
+    for i in "$@"; do
+    case $i in
+        -i|--inputdir)
+        INPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -o|--outputdir)
+        BASEOUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -c|--commands)
+        COMMANDS="$2"
+        shift
+        shift
+        ;;
+        -d|--dependency)
+        DEPENDENCY="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+
+    mkdir -p "$BASEOUTPUTDIR/jobs"
+    #log "Building files..."
+    #build_files
+    #log "Built files"
+    #create_rgi_jobs $COMMANDS
+    create_integron_jobs $COMMANDS
+    create_crispr_jobs $COMMANDS
+    #submit_jobs
+}
+main "$@"
