@@ -36,6 +36,8 @@ main() {
     newl
     log " " " " "Running Microtrawler pipeline"
     log "Analysis Directory" "$OUTPUTDIR"
+    newl
+
     if [[ $STEP = "0" ]]; then
         log "Downloading up-to-date culture reference databases" "" "Step 0"
         dbjobnums=$(./0_dl-db -o "$OUTPUTDIR/0_databases")
@@ -44,7 +46,7 @@ main() {
         newl
     fi
 
-    if [[ $STEP < "2" ]]; then
+    if [[ $STEP = "1" ]]; then
         log "Downloading assembled sequences for isolates" "" "Step 1"
         if [ ! -z $dbjobnums ]; then
             seqjobnums=$(./1_dl-seqs -i "$OUTPUTDIR/0_databases" -o "$OUTPUTDIR/1_sequences" --dependency $dbjobnums)
@@ -53,24 +55,26 @@ main() {
         fi
         seqjobnums=${seqjobnums%?}
         log "Download sequence jobs submitted" "$seqjobnums"
+        newl
     fi
 
-    if [[ $STEP < "3" ]]; then
+    if [[ $STEP = "2" ]]; then
         log "Searching for antibiotic resistance" "" "Step 2"
         if [ ! -z $seqjobnums ]; then
-            rgijobnums=$(./2_analyze-seqs -i "$OUTPUTDIR/1_sequences" -o "$OUTPUTDIR/2_rgi" --dependency $seqjobnums -c 50)
+            rgijobnums=$(./2_analyze-seqs -i "$OUTPUTDIR/1_sequences" -o "$OUTPUTDIR/2_analyze-seqs" --dependency $seqjobnums -c 50)
         else
-            rgijobnums=$(./2_analyze-seqs -i "$OUTPUTDIR/1_sequences" -o "$OUTPUTDIR/2_rgi" -c 50)
+            rgijobnums=$(./2_analyze-seqs -i "$OUTPUTDIR/1_sequences" -o "$OUTPUTDIR/2_analyze-seqs" -c 50)
         fi
         rgijobnums=${rgijobnums%?}
         log "Antibiotic resistance jobs submitted" "$rgijobnums"
+        newl
     fi
-exit
 
-    if [[ $STEP < "4" ]]; then
+    if [[ $STEP = "3" ]]; then
         log "Performing meta-analysis" "" "Step 3"
-        ./3_analyze -i "$OUTPUTDIR/2_rgi" -o "$OUTPUTDIR/3_analysis" -d "$OUTPUTDIR/0_databases" -f "$OUTPUTDIR/1_sequences"
-        #log "Analysis pipeline jobs submitted" "$analysisjobnums"
+        ./3_analyze-resistance -i "$OUTPUTDIR/2_analyze-seqs" -o "$OUTPUTDIR/3_analysis-resistance" -d "$OUTPUTDIR/0_databases" -f "$OUTPUTDIR/1_sequences"
+        log "Complete" "" "Step 3"
+        newl
     fi
 }
 

@@ -1,0 +1,79 @@
+#!/bin/bash -e
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -i,--inputdir : input directory of output from step 2. 
+            default is /n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs
+    -r,--resistance: input file of merged rgi. 
+        default is /n/scratch3/users/a/ak586/microtrawler/3_analysis-resistance/all_rgiout_*
+    -o,--outputdir: base output directory for rgi. 
+        default is /n/scratch3/users/a/ak586/microtrawler/3_analysis-integron
+    "    
+}
+
+merge_integron_output() {
+    echo -e "Acc_Num\tAssembly_Num\tID_integron\tContig\telement\tst\ten\tstrand\teval\ttype_elt\tannotation\tmodel\ttype\tdefault\tdistance_2attC\tconsidered_topology" > $OUTPUTDIR/merged-integrons
+    log "Merging integron output"
+    for i in $(fd -e '.integrons' --base-directory $INPUTDIR/NCTC/ena --exact-depth=5); do
+    #for i in $INPUTDIR/NCTC/ena/NCTC*/*/integrons/Results_Integron_Finder*/*.integrons; do
+        #echo $i
+        accnum=$(basename $(dirname $(dirname $(dirname $(dirname $i)))))
+        assembly=$(basename $i .integrons)
+        #echo $accnum
+        cat $INPUTDIR/NCTC/ena/$i | grep -v '^#' | sed 1d | awk -v a=$accnum -v b=$assembly '{printf "%s\t%s\t%s\n", a, b, $0}' >> $OUTPUTDIR/merged-integrons
+    done
+    log "Completed merging integron output"
+}
+
+intersect_integron_resistance() {
+    sed 1d $RESISTANCEINPUT | grep -v 'NoAb' | \
+        awk -F'\t' '{print $6, $7, $8, $9}' | sed -E $'s/(_[0-9]*)//g' | \
+        tr -s ' ' | awk '{if($2<$3){print $0}}' > $OUTPUTDIR/rgi.bed
+    sed 1d $OUTPUTDIR/merged-integrons | cut -f4,6,7 > $OUTPUTDIR/merged-integrons.bed
+    sort-bed $OUTPUTDIR/rgi.bed > $OUTPUTDIR/rgi-sorted.bed
+    sort-bed $OUTPUTDIR/merged-integrons.bed > $OUTPUTDIR/merged-integrons-sorted.bed
+    bedops -e 100% $OUTPUTDIR/rgi-sorted.bed $OUTPUTDIR/merged-integrons-sorted.bed > \
+        $OUTPUTDIR/rgi_overlapsintegrons.bed
+    cut -f2,3 $OUTPUTDIR/rgi_overlapsintegrons.bed > $OUTPUTDIR/olap_coords
+    grep -f $OUTPUTDIR/olap_coords $RESISTANCEINPUT > $(dirname $RESISTANCEINPUT)/rgi_subset_integronoverlap
+}
+
+
+main() {
+    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs"
+    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/3_analysis-integron"
+    RESISTANCEINPUT=$(echo /n/scratch3/users/a/ak586/microtrawler/3_analysis-resistance/all_rgiout_* | rev | cut -d' ' -f1 | rev)
+    for i in "$@"; do
+    case $i in
+        -i|--inputdir)
+        INPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -o|--outputdir)
+        OUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -r|--resistance)
+        RESISTANCEINPUT="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+
+    mkdir -p $OUTPUTDIR
+    merge_integron_output
+}
+main "$@"

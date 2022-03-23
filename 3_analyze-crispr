@@ -1,0 +1,63 @@
+#!/bin/bash -e
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -i,--inputdir : input directory of output from step 2. 
+            default is /n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs
+    -o,--outputdir: base output directory for rgi. 
+        default is /n/scratch3/users/a/ak586/microtrawler/3_analysis-crispr
+    -d,--dbdir: input directory of output from step 0. 
+        default is /n/scratch3/users/a/ak586/microtrawler/0_databases
+    -f,--fastadir: input directory of output from step 1. 
+        default is /n/scratch3/users/a/ak586/microtrawler/1_sequences
+    "    
+}
+
+merge_crispr_output() {
+
+}
+
+main() {
+    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs"
+    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/3_analysis-crispr"
+    DBDIR="/n/scratch3/users/a/ak586/microtrawler/0_databases"
+    FASTADIR="/n/scratch3/users/a/ak586/microtrawler/1_sequences"
+    for i in "$@"; do
+    case $i in
+        -i|--inputdir)
+        INPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -d|--dbdir)
+        DBDIR="$2"
+        shift
+        shift
+        ;;
+        -f|--fastadir)
+        FASTADIR="$2"
+        shift
+        shift
+        ;;
+        -o|--outputdir)
+        OUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+
+    mkdir -p $OUTPUTDIR
+    merge_crispr_output
+}
+main "$@"

@@ -1,0 +1,60 @@
+#!/bin/bash -ex
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -i,--inputdir : input directory of output from step 2. 
+            default is /n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs
+    -o,--outputdir: base output directory for plasmids. 
+        default is /n/scratch3/users/a/ak586/microtrawler/3_analysis-plasmid
+    "    
+}
+
+merge_mlplasmid_output() {
+    STRAIN="$1"
+    echo -e "AccNum\tProb_Chrom\tProb_Plasmid\tPrediction\tContig_name\tContig_len" > "$OUTPUTDIR/merged-$STRAIN-mlplasmidout"
+    while read -r i; do
+        acc=$(basename $(dirname $i))
+        sed 1d $i/plasmid/mlplasmids_out.tab | sed "s:^:$acc\t:g" >> "$OUTPUTDIR/merged-$STRAIN-mlplasmidout"
+    done<"$INPUTDIR/output_$STRAIN-dirs"
+}
+
+merge_plasmidfinder_output() {
+    echo "AAAAAAH"
+}
+
+main() {
+    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs"
+    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/3_analysis-plasmid"
+    for i in "$@"; do
+    case $i in
+        -i|--inputdir)
+        INPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -o|--outputdir)
+        OUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+
+    mkdir -p $OUTPUTDIR
+    for i in "Klebsiella pneumoniae" "Escherichia coli" "Enterococcus faecium" "Enterococcus faecalis" "Acinetobacter baumannii"
+    #for i in "Klebsiella pneumoniae"
+    do
+        merge_mlplasmid_output "$i"
+    done
+}
+main "$@"

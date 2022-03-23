@@ -6,10 +6,14 @@ source ./funcs
 
 usage() {
     echo "
-    -i,--inputdir : input directory of output from step 2. default is /n/scratch3/users/a/ak586/microtrawler/2_rgi
-    -o,--outputdir: base output directory for rgi. default is /n/scratch3/users/a/ak586/microtrawler/3_analysis
-    -d,--dbdir: input directory of output from step 0. default is /n/scratch3/users/a/ak586/microtrawler/0_databases
-    -f,--fastadir: input directory of output from step 1. default is /n/scratch3/users/a/ak586/microtrawler/1_sequences
+    -i,--inputdir : input directory of output from step 2. 
+        default is /n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs
+    -o,--outputdir: base output directory for rgi. 
+        default is /n/scratch3/users/a/ak586/microtrawler/3_analysis-resistance
+    -d,--dbdir: input directory of output from step 0. 
+        default is /n/scratch3/users/a/ak586/microtrawler/0_databases
+    -f,--fastadir: input directory of output from step 1. 
+        default is /n/scratch3/users/a/ak586/microtrawler/1_sequences
     "    
 }
 
@@ -23,30 +27,36 @@ get_chromosome_info() {
     mv $OUTPUTDIR/seqreport_tmp $OUTPUTDIR/seqreports
 }
 
-
 merge_rgi_output() {
+    log "Merging RGI output"
     merged_output=$OUTPUTDIR/all_rgiout_$(date -u +"%Y-%m-%d")
     fd -a "*rgi_out.txt" --glob $INPUTDIR > $OUTPUTDIR/rgi_filelist
+    log "Built RGI file list"
     head -1 $(head -1 $OUTPUTDIR/rgi_filelist) > $OUTPUTDIR/rgihead
-    awk -F '\t' '{printf "Accession_Number\tStrain\tAssembly_No\tYear_Cultured\t%s\n", $0}' $OUTPUTDIR/rgihead > $merged_output
+    awk -F '\t' \
+        '{printf "Accession_Number\tStrain\tAssembly_No\tYear_Cultured\t%s\n",\
+        $0}' $OUTPUTDIR/rgihead > $merged_output
     rm $OUTPUTDIR/rgihead
 
     # do NCTC shit
     cut -f2- $DBDIR/nctc_db.csv | sed 's/ //' > $OUTPUTDIR/nctc_nospace.tsv
+
     # turns out ALL of gbk/refseq is included in ENA!
     for f in $(fd "rgi_out" -e '.txt' --base-directory $INPUTDIR | grep NCTC | grep ena); do
-        acc_num=$(echo $f | cut -d'/' -f3)
+        log "File" "$f" 
+        acc_num=$(echo $f | cut -d'/' -f4)
+        log "Acc. Num" "$acc_num" 
         strain=$(grep -w "$acc_num" $OUTPUTDIR/nctc_nospace.tsv | cut -f2)
+        log "Strain" "$strain" 
         if [ ! $(echo "$strain" | wc -l) -eq 1 ]; then 
-            echo "More than one strain found for $acc_num, using the first one"
             strain=$(echo "$strain" | head -1)
+            log "More than one strain found for $acc_num, using the first one ($strain)"
         fi
-        assembly=$(echo $f | cut -d'/' -f4)
+        assembly=$(echo $f | cut -d'/' -f5)
         assembly_num=$(echo $assembly | cut -d'_' -f2)
         if [ $assembly_num == "assembly" ]; then 
             assembly_num=1
         else
-            #echo $assembly_num
             ((assembly_num++))
         fi
 
@@ -63,13 +73,13 @@ merge_rgi_output() {
 
 
         rgifile="$INPUTDIR/$f"
-        echo "$f"
-        echo "$acc_num"
-        echo "$strain"
-        echo "$assembly_num"
-        #echo "$genomic_pos"
-        echo "$yearcult"
-        echo ""
+        #echo "$f"
+        #echo "$acc_num"
+        #echo "$strain"
+        #echo "$assembly_num"
+        ##echo "$genomic_pos"
+        #echo "$yearcult"
+        #echo ""
 
         linecount=$(wc -l $rgifile | awk '{print $1}')
         if [ "$linecount" -eq "1" ]; then
@@ -77,21 +87,22 @@ merge_rgi_output() {
                         -v strain="$strain" \
                         -v assembly_num="$assembly_num" \
                         -v yearcult="$yearcult" \
-                        '{printf "%s\t%s\t%s\t%s\tNoAb\n", acc_num, strain, assembly_num, yearcult}' $rgifile >> $merged_output
+                        '{printf "%s\t%s\t%s\t%s\tNoAb\n", acc_num, strain, assembly_num, yearcult}' \
+                        $rgifile >> $merged_output
         else
             awk -F '\t' -v acc_num="$acc_num" \
                         -v strain="$strain" \
                         -v assembly_num="$assembly_num" \
                         -v yearcult="$yearcult" \
-                        '{if(NR!=1){printf "%s\t%s\t%s\t%s\t%s\n", acc_num, strain, assembly_num, yearcult, $0}}' $rgifile >> $merged_output
+                        '{if(NR!=1){printf "%s\t%s\t%s\t%s\t%s\n", acc_num, strain, assembly_num, yearcult, $0}}' \
+                            $rgifile >> $merged_output
         fi
-        #exit
     done
 }
 
 main() {
-    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/2_rgi"
-    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/3_analysis"
+    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs"
+    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/3_analysis-resistance"
     DBDIR="/n/scratch3/users/a/ak586/microtrawler/0_databases"
     FASTADIR="/n/scratch3/users/a/ak586/microtrawler/1_sequences"
     for i in "$@"; do
