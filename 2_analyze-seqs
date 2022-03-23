@@ -6,9 +6,13 @@ source ./funcs
 
 usage() {
     echo "
-    -i,--inputdir : input directory of output from step 1. default is /n/scratch3/users/a/ak586/microtrawler/1_sequences
-    -o,--outputdir: base output directory for rgi. default is /n/scratch3/users/a/ak586/microtrawler/2_rgi
-    -c,--commands: number of RGI commands to submit per job. default is 50
+    -i,--inputdir : input directory of output from step 1. default is 
+                    /n/scratch3/users/a/ak586/microtrawler/1_sequences
+    --dbdir : input directory of output from step 0. default is 
+                    /n/scratch3/users/a/ak586/microtrawler/0_databases
+    -o,--outputdir: base output directory for rgi. default is 
+                    /n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs
+    -c,--commands: number of commands to submit per job. default is 50
     "
 }
 
@@ -23,12 +27,28 @@ build_files() {
     done
 }
 
+build_files_strain() {
+    rm -f "$BASEOUTPUTDIR/output_$STRAIN-dirs" 2> /dev/null
+    STRAIN=$1
+    awk -F'\t' -v s="$STRAIN" '{if(match($3, s)){print $0}}' $DBDIR/nctc_db.csv \
+        | cut -f2 | tr -d ' ' | sed 's:^:/:g' | sed 's:$:/:g'\
+        > $BASEOUTPUTDIR/"acc_$STRAIN"
+    fd "*.fa" -a $INPUTDIR --glob | grep -f $BASEOUTPUTDIR/"acc_$STRAIN" \
+        | sort > "$BASEOUTPUTDIR/input_$STRAIN-fastas"
+
+    for i in $(fd "*.fa" --base-directory $INPUTDIR --glob \
+        | grep -f $BASEOUTPUTDIR/"acc_$STRAIN" | sort)
+    do
+        x=$(dirname $(dirname $i))
+        y=$(basename $i .fa)
+        echo "$BASEOUTPUTDIR/$x/$y" >> "$BASEOUTPUTDIR/output_$STRAIN-dirs"
+    done
+}
+
+
 create_rgi_jobs() {
     mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
     mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
-    rm -r "$BASEOUTPUTDIR/jobs" 2> /dev/null
-    mkdir -p "$BASEOUTPUTDIR/jobs/outputs"
-
     jobctr=0
     rgictr=0
     for i in "${!fasta_input_list[@]}"; do
@@ -37,10 +57,10 @@ create_rgi_jobs() {
         fasta="${fasta_input_list[i]}"
         fasta_fname="$(basename $fasta .fa)"
         output_basename="$outdir"/"$fasta_fname"_abr-search
-        if [ -s "$output_basename".rgi_out.txt ]; then
-            log "Looks like $fasta has already been analyzed! Skipping."
+        if [ -s "$output_basename".rgi_out.json ]; then
+            log "RGI" "$fasta already analyzed! Skipping."
         else
-            log "Adding $fasta to be analyzed"
+            log "RGI" "Adding $fasta"
             if [ $rgictr -eq 0 ] || [ $rgictr -eq $1 ]; then
                 rgictr=1
                 job="$BASEOUTPUTDIR/jobs/FINDRESISTANCE_$jobctr-microtrawler.job"
@@ -69,14 +89,14 @@ create_integron_jobs() {
     jobctr=0
     integctr=0
     for i in "${!fasta_input_list[@]}"; do
-        outdir="${output_dir_list[i]}"
+        outdir="${output_dir_list[i]}/integrons"
         mkdir -p "$outdir"
         fasta="${fasta_input_list[i]}"
         fasta_fname="$(basename $fasta .fa)"
-        if [ -s "$outdir"/mysequences.integrons ]; then
-            log "Looks like $fasta has already been analyzed! Skipping."
+        if [ -s "$outdir"/Results_Integron_Finder_$fasta_fname/integron_finder.out ]; then
+            log "Integron" "$fasta already analyzed! Skipping."
         else
-            log "Adding $fasta to be analyzed"
+            log "Integron" "Adding $fasta"
             if [ $integctr -eq 0 ] || [ $integctr -eq $1 ]; then
                 integctr=1
                 job="$BASEOUTPUTDIR/jobs/FINDINTEGRONS_$jobctr-microtrawler.job"
@@ -84,9 +104,37 @@ create_integron_jobs() {
                 sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-find-integrons" $job
                 ((jobctr++)) || true
             fi
-            echo "integron_finder --outdir $outdir $fasta" >> $job
+            echo "integron_finder --keep-tmp --outdir $outdir $fasta" >> $job
             echo "echo "Finished analyzing $fasta"" >> $job
             ((integctr++)) || true
+        fi
+    done
+}
+
+create_plasmidfinder_jobs() {
+    mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
+    mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
+    jobctr=0
+    plasmidctr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}/plasmid"
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        if [ -s "$outdir"/data.json ]; then
+            log "PlasmidFinder" "$fasta already analyzed! Skipping."
+        else
+            log "PlasmidFinder" "Adding $fasta"
+            if [ $plasmidctr -eq 0 ] || [ $plasmidctr -eq $1 ]; then
+                plasmidctr=1
+                job="$BASEOUTPUTDIR/jobs/FINDPLAMIDS_$jobctr-microtrawler.job"
+                cp $jobt_2 $job
+                sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-find-plasmids" $job
+                ((jobctr++)) || true
+            fi
+            echo "plasmidfinder.py -i $fasta -o $outdir" >> $job
+            echo "echo "Finished analyzing $fasta"" >> $job
+            ((plasmidctr++)) || true
         fi
     done
 }
@@ -98,13 +146,12 @@ create_crispr_jobs() {
     crisprctr=0
     for i in "${!fasta_input_list[@]}"; do
         outdir="${output_dir_list[i]}/cctyper"
-        mkdir -p "$outdir"
         fasta="${fasta_input_list[i]}"
         fasta_fname="$(basename $fasta .fa)"
         if [ -s "$outdir/CRISPR_Cas.tab" ]; then
-            log "Looks like $fasta has already been analyzed! Skipping."
+            log "CRISPR" "$fasta already analyzed! Skipping."
         else
-            log "Adding $fasta to be analyzed"
+            log "CRISPR" "Adding $fasta"
             if [ $crisprctr -eq 0 ] || [ $crisprctr -eq $1 ]; then
                 crisprctr=1
                 job="$BASEOUTPUTDIR/jobs/FINDCRISPR_$jobctr-microtrawler.job"
@@ -119,16 +166,41 @@ create_crispr_jobs() {
     done
 }
 
+create_mlplasmids_jobs() {
+    STRAIN=$1
+    build_files_strain "$STRAIN"
+    mapfile -t fasta_input_list < "$BASEOUTPUTDIR/input_$STRAIN-fastas"
+    mapfile -t output_dir_list < "$BASEOUTPUTDIR/output_$STRAIN-dirs"
+    jobctr=0
+    plasmidctr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}/plasmid"
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        if [ -s "$outdir"/mlplasmids_out.tab ]; then
+            log "mlplasmid" "$fasta already analyzed! Skipping."
+        else
+            log "mlplasmid" "Adding $fasta"
+            job="$BASEOUTPUTDIR/jobs/FINDMLPLAMIDS_$STRAIN-microtrawler.job"
+            [ ! -s "$job" ] && (cp $jobt_2 "$job"; sed -i "2i #SBATCH -o "$BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_\'$STRAIN\'-find-plasmids"" "$job")
+            echo "module load gcc; module load R/3.6.1.lua" >> "$job"
+            echo "Rscript $tooldir/mlplasmids/scripts/run_mlplasmids.R $fasta $outdir/mlplasmids_out.tab 0.7 '$STRAIN'" >> "$job"
+            echo "echo "Finished analyzing $fasta"" >> "$job"
+        fi
+    done
+}
+
 submit_jobs() {
     joblist=""
     if [ -z $DEPENDENCY ]; then
-        for j in $(fd -a "FINDRESISTANCE_*-microtrawler.job" --glob $BASEOUTPUTDIR); do
-            jobid=$(sbatch $j | cut -d' ' -f4)
+        for j in $(fd -a "FIND*-microtrawler.job" --glob $BASEOUTPUTDIR/jobs); do
+            jobid=$(sbatch "$j" | cut -d' ' -f4)
             joblist+="$jobid:"
         done
     else
-        for j in $(fd -a "FINDRESISTANCE_*-microtrawler.job" --glob $BASEOUTPUTDIR); do
-            jobid=$(sbatch --dependency=afterok:"$DEPENDENCY" $j | cut -d' ' -f4)
+        for j in $(fd -a "FIND*-microtrawler.job" --glob $BASEOUTPUTDIR/jobs); do
+            jobid=$(sbatch --dependency=afterok:"$DEPENDENCY" "$j" | cut -d' ' -f4)
             joblist+="$jobid:"
         done
     fi
@@ -137,7 +209,8 @@ submit_jobs() {
 
 main() {
     INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/1_sequences"
-    BASEOUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/2_rgi"
+    BASEOUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs"
+    DBDIR="/n/scratch3/users/a/ak586/microtrawler/0_databases"
     COMMANDS=50
     for i in "$@"; do
     case $i in
@@ -161,6 +234,11 @@ main() {
         shift
         shift
         ;;
+        --dbdir)
+        DBDIR="$2"
+        shift
+        shift
+        ;;
         -h|--help)
         usage
         exit
@@ -170,13 +248,20 @@ main() {
     esac
     done
 
-    mkdir -p "$BASEOUTPUTDIR/jobs"
-    #log "Building files..."
-    #build_files
-    #log "Built files"
-    #create_rgi_jobs $COMMANDS
-    create_integron_jobs $COMMANDS
-    create_crispr_jobs $COMMANDS
+    rm -r "$BASEOUTPUTDIR/jobs" 2> /dev/null
+    mkdir -p "$BASEOUTPUTDIR/jobs/outputs"
+
+    log "Building files..."
+    build_files
+    log "Built files"
+    create_rgi_jobs $COMMANDS
+    #create_integron_jobs $COMMANDS
+    #create_crispr_jobs $COMMANDS
+    #create_plasmid_jobs $COMMANDS
+    #for i in "Klebsiella pneumoniae" "Escherichia coli" "Enterococcus faecium" "Enterococcus faecalis" "Acinetobacter baumannii"
+    #do
+        #create_mlplasmids_jobs "$i" $COMMANDS
+    #done
     #submit_jobs
 }
 main "$@"

@@ -1,5 +1,14 @@
 #!/bin/bash
 
+K12GBK="/n/data1/hms/dbmi/baym/arya/ref/Ecoli/K12/GCF_000005845.2_ASM584v2_genomic.gbff.gz"
+KlebGBK="/n/data1/hms/dbmi/baym/arya/ref/Kleb/ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz"
+FaeciumGBK="/n/data1/hms/dbmi/baym/arya/ref/EntFaecium/ASM973400v2/GCF_009734005.1_ASM973400v2_genomic.gbff.gz"
+FaecalisGBK="/n/data1/hms/dbmi/baym/arya/ref/EntFaecalis/ASM2161010v1/GCF_021610105.1_ASM2161010v1_genomic.gbff.gz"
+ActBaumanniiGBK="/n/data1/hms/dbmi/baym/arya/ref/ActBaumannii/ASM863263v1/GCF_008632635.1_ASM863263v1_genomic.gbff.gz"
+StaphGBK="/n/data1/hms/dbmi/baym/arya/ref/StaphAureus/ASM360985v1/GCF_003609855.1_ASM360985v1_genomic.gbff.gz"
+PseudAerugGBK="/n/data1/hms/dbmi/baym/arya/ref/PseudAerug/NCTC10332/GCF_001457615.1_NCTC10332_genomic.gbff.gz"
+SalmGBK="/n/data1/hms/dbmi/baym/arya/ref/Salmonella/ASM694v2/GCF_000006945.2_ASM694v2_genomic.gbff.gz"
+
 tooldir="/n/data1/hms/dbmi/baym/arya/tools"
 
 firefox="./hi"
@@ -11,3 +20,4 @@ jobt_0="$jobdir/microt_0.jobtemp"
 jobt_1="$jobdir/microt_1.jobtemp"
 jobt_1a="$jobdir/microt_1a.jobtemp"
 jobt_2="$jobdir/microt_2.jobtemp"
+jobt_4="$jobdir/microt_4.jobtemp"
