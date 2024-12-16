@@ -1,0 +1,144 @@
+#!/bin/bash -e
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -i,--inputdir : input directory of output from step 1. default is 
+                    /n/scratch3/users/a/ak586/microtrawler/1_sequences
+    --dbdir : input directory of output from step 0. default is 
+                    /n/scratch3/users/a/ak586/microtrawler/0_databases
+    -o,--outputdir: base output directory for rgi. default is 
+                    /n/scratch3/users/a/ak586/microtrawler/5_amrfinderplus
+    "
+}
+
+make_job() {
+    jobctr=0
+    amrfinderctr=0
+    mkdir -p $BASEOUTPUTDIR/jobs
+    while IFS=$'\t' read -r accnum species; do
+        amrorganism=""
+        case $species in 
+        "K. pneumoniae")
+            amrorganism="Klebsiella_pneumoniae"
+            ;;
+        "S. enterica")
+            amrorganism="Salmonella"
+            ;;
+        "A. baumannii")
+            amrorganism="Acinetobacter_baumannii"
+            ;;
+        "E. faecium")
+            amrorganism="Enterococcus_faecium"
+            ;;
+        "E. coli")
+            amrorganism="Escherichia"
+            ;;
+        "S. aureus")
+            amrorganism="Staphylococcus_aureus"
+            ;;
+        "S. pyogenes")
+            amrorganism="Streptococcus_pyogenes"
+            ;;
+        "S. pneumoniae")
+            amrorganism="Streptococcus_pneumoniae"
+            ;;
+        "Enterobacter sp.")
+            amrorganism="Enterobacter_cloacae"
+            ;;
+        "P. aeruginosa")
+            amrorganism="Pseudomonas_aeruginosa"
+            ;;
+        *)
+            #echo $species
+            ;;
+        esac
+        #if [ -z "$amrorganism" ]; then
+            #continue
+        #fi
+        for gca_acc in $INPUTDIR/NCTC/ena/$accnum/*; do
+            gca=$(basename $gca_acc)
+            for fastas in $gca_acc/*.fa; do
+                fasta_bn=$(basename $fastas .fa)
+                if [[ $fasta_bn == "*" ]]; then
+                    continue
+                fi
+                amrfinderoutdir=$BASEOUTPUTDIR/$accnum/$gca/$fasta_bn
+                mkdir -p $amrfinderoutdir
+                if [ $amrfinderctr -eq 0 ] || [ $amrfinderctr -eq 40 ]; then
+                    amrfinderctr=1
+                    job="$BASEOUTPUTDIR/jobs/AMRFINDER_$jobctr-microtrawler.job"
+                    echo "#!/bin/bash
+#SBATCH -c 12
+#SBATCH -N 1
+#SBATCH -t 0-05:00
+#SBATCH -p short
+#SBATCH --mem=2GB
+source /n/data1/hms/dbmi/baym/arya/miniconda/etc/profile.d/conda.sh
+conda activate amrfinder" > $job
+                    ((jobctr++)) || true
+                fi
+                if [ ! -s $amrfinderoutdir/amrfinderoutput ]; then
+                    echo -e "Run $accnum\t$gca\t$fasta_bn\t$amrorganism"
+                    #if [ $fasta_b ]
+                    if [ -z "$amrorganism" ]; then
+                        echo "amrfinder -n $fastas -o $amrfinderoutdir/amrfinderoutput --threads 12" >> $job
+                    else
+                        echo "amrfinder -n $fastas -O $amrorganism -o $amrfinderoutdir/amrfinderoutput --threads 12" >> $job
+                    fi
+                    ((amrfinderctr++)) || true
+                else
+                    continue
+                fi
+            done
+        done
+    done < ./nctc_accessions.tsv
+}
+
+merge_files() {
+    for i in $(fd 'amrfinderoutput' $BASEOUTPUTDIR); do
+        acc=$(basename $(dirname $(dirname $(dirname $i))))
+        line_count=$(wc -l < "$i")
+        if [ "$line_count" -eq 1 ]; then
+            if ! grep -q -E "^$acc[[:space:]]" $BASEOUTPUTDIR/merged_amrfinderout; then
+                echo -e "$acc\tNA"
+            fi
+        else
+            cat $i | sed 1d | sed "s/^/$acc\t/"
+        fi
+    done > $BASEOUTPUTDIR/merged_amrfinderout
+}
+
+
+main() {
+    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/1_sequences"
+    BASEOUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/5_amrfinderplus"
+    for i in "$@"; do
+    case $i in
+        -i|--inputdir)
+        INPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -o|--outputdir)
+        BASEOUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+
+    rm -rf "$BASEOUTPUTDIR/jobs" 2> /dev/null
+    #make_job
+    merge_files
+}
+main "$@"

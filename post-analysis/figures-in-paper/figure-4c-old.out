@@ -1,0 +1,933 @@
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+findfont: Font family ['Arial'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['Arial'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['Arial'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['Arial'] not found. Falling back to DejaVu Sans.
+findfont: Font family ['Arial'] not found. Falling back to DejaVu Sans.
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:244: RuntimeWarning:
+
+More than 20 figures have been opened. Figures created through the pyplot interface (`matplotlib.pyplot.figure`) are retained until explicitly closed and may consume too much memory. (To control this warning, see the rcParam `figure.max_open_warning`).
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+figure-4c.py:250: FutureWarning:
+
+Passing method to Int64Index.get_loc is deprecated and will raise in a future version. Use index.get_indexer([item], method=...) instead.
+
+     year  num_pos  all      frac Anthropogenicity
+0    1901        0    1  0.000000        Pre-Human
+1    1904        0    1  0.000000        Pre-Human
+2    1905        0    1  0.000000        Pre-Human
+3    1906        2    2  1.000000        Pre-Human
+4    1911        2    2  1.000000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        8    8  1.000000       Post-Human
+104  2014        5    5  1.000000       Post-Human
+105  2015       22   23  0.956522       Post-Human
+106  2016        1    2  0.500000       Post-Human
+107  2018        1    1  1.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+1    1902        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+2    1903        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+3    1904        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+4    1905        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       63   66       Post-Human  0.954545  0.025640  0.050254     66.0
+113  2014       57   60       Post-Human  0.950000  0.028137  0.055148     60.0
+114  2015       53   56       Post-Human  0.946429  0.030090  0.058976     56.0
+115  2016       47   49       Post-Human  0.959184  0.028266  0.055402     49.0
+116  2017       44   46       Post-Human  0.956522  0.030068  0.058933     46.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.9795
+     year  num_pos  all      frac Anthropogenicity
+0    1901        0    1  0.000000        Pre-Human
+1    1904        0    1  0.000000        Pre-Human
+2    1905        0    1  0.000000        Pre-Human
+3    1906        2    2  1.000000        Pre-Human
+4    1911        2    2  1.000000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        5    8  0.625000       Post-Human
+104  2014        4    5  0.800000       Post-Human
+105  2015        9   23  0.391304       Post-Human
+106  2016        2    2  1.000000       Post-Human
+107  2018        1    1  1.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+1    1902        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+2    1903        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+3    1904        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+4    1905        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       43   66       Post-Human  0.651515  0.058652  0.114958     50.0
+113  2014       37   60       Post-Human  0.616667  0.062768  0.123025     44.0
+114  2015       33   56       Post-Human  0.589286  0.065741  0.128853     40.0
+115  2016       28   49       Post-Human  0.571429  0.070696  0.138564     35.0
+116  2017       25   46       Post-Human  0.543478  0.073442  0.143946     32.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.9926
+     year  num_pos  all      frac Anthropogenicity
+0    1901        0    1  0.000000        Pre-Human
+1    1904        0    1  0.000000        Pre-Human
+2    1905        0    1  0.000000        Pre-Human
+3    1906        2    2  1.000000        Pre-Human
+4    1911        2    2  1.000000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        5    8  0.625000       Post-Human
+104  2014        4    5  0.800000       Post-Human
+105  2015        9   23  0.391304       Post-Human
+106  2016        2    2  1.000000       Post-Human
+107  2018        1    1  1.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+1    1902        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+2    1903        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+3    1904        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+4    1905        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       41   66       Post-Human  0.621212  0.059710  0.117031     49.0
+113  2014       35   60       Post-Human  0.583333  0.063647  0.124748     42.0
+114  2015       32   56       Post-Human  0.571429  0.066130  0.129615     39.0
+115  2016       28   49       Post-Human  0.571429  0.070696  0.138564     35.0
+116  2017       25   46       Post-Human  0.543478  0.073442  0.143946     32.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.7300
+     year  num_pos  all     frac Anthropogenicity
+0    1901        0    1  0.00000        Pre-Human
+1    1904        0    1  0.00000        Pre-Human
+2    1905        0    1  0.00000        Pre-Human
+3    1906        0    2  0.00000        Pre-Human
+4    1911        2    2  1.00000        Pre-Human
+..    ...      ...  ...      ...              ...
+103  2013        8    8  1.00000       Post-Human
+104  2014        5    5  1.00000       Post-Human
+105  2015       17   23  0.73913       Post-Human
+106  2016        2    2  1.00000       Post-Human
+107  2018        1    1  1.00000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+1    1902        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+2    1903        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+3    1904        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+4    1905        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       56   66       Post-Human  0.848485  0.044134  0.086504     61.0
+113  2014       50   60       Post-Human  0.833333  0.048113  0.094301     55.0
+114  2015       47   56       Post-Human  0.839286  0.049078  0.096193     52.0
+115  2016       43   49       Post-Human  0.877551  0.046829  0.091785     47.0
+116  2017       40   46       Post-Human  0.869565  0.049656  0.097325     44.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.9952
+     year  num_pos  all      frac Anthropogenicity
+0    1901        1    1  1.000000        Pre-Human
+1    1904        0    1  0.000000        Pre-Human
+2    1905        0    1  0.000000        Pre-Human
+3    1906        2    2  1.000000        Pre-Human
+4    1911        2    2  1.000000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        5    8  0.625000       Post-Human
+104  2014        4    5  0.800000       Post-Human
+105  2015        1   23  0.043478       Post-Human
+106  2016        1    2  0.500000       Post-Human
+107  2018        1    1  1.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+1    1902        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+2    1903        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+3    1904        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+4    1905        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       28   66       Post-Human  0.424242  0.060835  0.119237     36.0
+113  2014       22   60       Post-Human  0.366667  0.062212  0.121936     29.0
+114  2015       20   56       Post-Human  0.357143  0.064030  0.125499     27.0
+115  2016       17   49       Post-Human  0.346939  0.067999  0.133279     24.0
+116  2017       14   46       Post-Human  0.304348  0.067843  0.132971     20.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.3542
+     year  num_pos  all      frac Anthropogenicity
+0    1901        0    1  0.000000        Pre-Human
+1    1904        0    1  0.000000        Pre-Human
+2    1905        0    1  0.000000        Pre-Human
+3    1906        2    2  1.000000        Pre-Human
+4    1911        2    2  1.000000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        7    8  0.875000       Post-Human
+104  2014        4    5  0.800000       Post-Human
+105  2015       22   23  0.956522       Post-Human
+106  2016        2    2  1.000000       Post-Human
+107  2018        1    1  1.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+1    1902        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+2    1903        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+3    1904        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+4    1905        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       58   66       Post-Human  0.878788  0.040174  0.078741     63.0
+113  2014       52   60       Post-Human  0.866667  0.043885  0.086015     57.0
+114  2015       49   56       Post-Human  0.875000  0.044194  0.086621     53.0
+115  2016       44   49       Post-Human  0.897959  0.043243  0.084757     48.0
+116  2017       41   46       Post-Human  0.891304  0.045892  0.089949     45.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.6005
+     year  num_pos  all      frac Anthropogenicity
+0    1901        0    1  0.000000        Pre-Human
+1    1904        0    1  0.000000        Pre-Human
+2    1905        0    1  0.000000        Pre-Human
+3    1906        0    2  0.000000        Pre-Human
+4    1911        2    2  1.000000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        3    8  0.375000       Post-Human
+104  2014        3    5  0.600000       Post-Human
+105  2015        1   23  0.043478       Post-Human
+106  2016        1    2  0.500000       Post-Human
+107  2018        1    1  1.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+1    1902        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+2    1903        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+3    1904        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+4    1905        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       23   66       Post-Human  0.348485  0.058652  0.114958     31.0
+113  2014       18   60       Post-Human  0.300000  0.059161  0.115955     25.0
+114  2015       16   56       Post-Human  0.285714  0.060368  0.118322     23.0
+115  2016       14   49       Post-Human  0.285714  0.064536  0.126491     20.0
+116  2017       11   46       Post-Human  0.239130  0.062892  0.123268     17.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.1486
+     year  num_pos  all      frac Anthropogenicity
+0    1901        0    1  0.000000        Pre-Human
+1    1904        0    1  0.000000        Pre-Human
+2    1905        0    1  0.000000        Pre-Human
+3    1906        2    2  1.000000        Pre-Human
+4    1911        2    2  1.000000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        4    8  0.500000       Post-Human
+104  2014        3    5  0.600000       Post-Human
+105  2015        3   23  0.130435       Post-Human
+106  2016        1    2  0.500000       Post-Human
+107  2018        1    1  1.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+1    1902        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+2    1903        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+3    1904        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+4    1905        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       29   66       Post-Human  0.439394  0.061092  0.119740     37.0
+113  2014       23   60       Post-Human  0.383333  0.062768  0.123025     30.0
+114  2015       21   56       Post-Human  0.375000  0.064694  0.126800     28.0
+115  2016       17   49       Post-Human  0.346939  0.067999  0.133279     24.0
+116  2017       14   46       Post-Human  0.304348  0.067843  0.132971     20.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.8024
+     year  num_pos  all      frac Anthropogenicity
+0    1901        0    1  0.000000        Pre-Human
+1    1904        0    1  0.000000        Pre-Human
+2    1905        0    1  0.000000        Pre-Human
+3    1906        2    2  1.000000        Pre-Human
+4    1911        2    2  1.000000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        3    8  0.375000       Post-Human
+104  2014        3    5  0.600000       Post-Human
+105  2015        8   23  0.347826       Post-Human
+106  2016        2    2  1.000000       Post-Human
+107  2018        1    1  1.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+1    1902        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+2    1903        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+3    1904        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+4    1905        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       35   66       Post-Human  0.530303  0.061433  0.120408     43.0
+113  2014       30   60       Post-Human  0.500000  0.064550  0.126517     38.0
+114  2015       27   56       Post-Human  0.482143  0.066773  0.130874     34.0
+115  2016       23   49       Post-Human  0.469388  0.071295  0.139737     30.0
+116  2017       20   46       Post-Human  0.434783  0.073091  0.143259     27.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.9839
+     year  num_pos  all      frac Anthropogenicity
+0    1901        0    1  0.000000        Pre-Human
+1    1904        0    1  0.000000        Pre-Human
+2    1905        0    1  0.000000        Pre-Human
+3    1906        0    2  0.000000        Pre-Human
+4    1911        2    2  1.000000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        2    8  0.250000       Post-Human
+104  2014        2    5  0.400000       Post-Human
+105  2015        3   23  0.130435       Post-Human
+106  2016        2    2  1.000000       Post-Human
+107  2018        0    1  0.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+1    1902        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+2    1903        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+3    1904        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+4    1905        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       26   66       Post-Human  0.393939  0.060145  0.117885     34.0
+113  2014       21   60       Post-Human  0.350000  0.061577  0.120690     28.0
+114  2015       18   56       Post-Human  0.321429  0.062409  0.122321     25.0
+115  2016       15   49       Post-Human  0.306122  0.065840  0.129047     21.0
+116  2017       12   46       Post-Human  0.260870  0.064743  0.126896     18.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.9594
+     year  num_pos  all      frac Anthropogenicity
+0    1901        0    1  0.000000        Pre-Human
+1    1904        0    1  0.000000        Pre-Human
+2    1905        1    1  1.000000        Pre-Human
+3    1906        0    2  0.000000        Pre-Human
+4    1911        1    2  0.500000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        6    8  0.750000       Post-Human
+104  2014        3    5  0.600000       Post-Human
+105  2015       14   23  0.608696       Post-Human
+106  2016        0    2  0.000000       Post-Human
+107  2018        0    1  0.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        1    5        Pre-Human  0.200000  0.178885  0.350615      3.0
+1    1902        1    5        Pre-Human  0.200000  0.178885  0.350615      3.0
+2    1903        1    5        Pre-Human  0.200000  0.178885  0.350615      3.0
+3    1904        1    5        Pre-Human  0.200000  0.178885  0.350615      3.0
+4    1905        1    5        Pre-Human  0.200000  0.178885  0.350615      3.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       28   66       Post-Human  0.424242  0.060835  0.119237     36.0
+113  2014       28   60       Post-Human  0.466667  0.064406  0.126236     36.0
+114  2015       26   56       Post-Human  0.464286  0.066645  0.130624     33.0
+115  2016       25   49       Post-Human  0.510204  0.071414  0.139971     32.0
+116  2017       25   46       Post-Human  0.543478  0.073442  0.143946     32.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.3917
+     year  num_pos  all  frac Anthropogenicity
+0    1901        0    1  0.00        Pre-Human
+1    1904        0    1  0.00        Pre-Human
+2    1905        0    1  0.00        Pre-Human
+3    1906        0    2  0.00        Pre-Human
+4    1911        0    2  0.00        Pre-Human
+..    ...      ...  ...   ...              ...
+103  2013        2    8  0.25       Post-Human
+104  2014        0    5  0.00       Post-Human
+105  2015        0   23  0.00       Post-Human
+106  2016        1    2  0.50       Post-Human
+107  2018        0    1  0.00       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+1    1902        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+2    1903        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+3    1904        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+4    1905        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       13   66       Post-Human  0.196970  0.048955  0.095951     20.0
+113  2014       10   60       Post-Human  0.166667  0.048113  0.094301     16.0
+114  2015       10   56       Post-Human  0.178571  0.051180  0.100312     16.0
+115  2016        8   49       Post-Human  0.163265  0.052801  0.103490     13.0
+116  2017        5   46       Post-Human  0.108696  0.045892  0.089949      9.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.9998
+     year  num_pos  all  frac Anthropogenicity
+0    1901        0    1   0.0        Pre-Human
+1    1904        0    1   0.0        Pre-Human
+2    1905        0    1   0.0        Pre-Human
+3    1906        0    2   0.0        Pre-Human
+4    1911        1    2   0.5        Pre-Human
+..    ...      ...  ...   ...              ...
+103  2013        0    8   0.0       Post-Human
+104  2014        0    5   0.0       Post-Human
+105  2015        0   23   0.0       Post-Human
+106  2016        0    2   0.0       Post-Human
+107  2018        0    1   0.0       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac    error        se  ci_high
+0    1901        0    5        Pre-Human  0.000000  0.00000  0.000000      0.0
+1    1902        0    5        Pre-Human  0.000000  0.00000  0.000000      0.0
+2    1903        0    5        Pre-Human  0.000000  0.00000  0.000000      0.0
+3    1904        0    5        Pre-Human  0.000000  0.00000  0.000000      0.0
+4    1905        0    5        Pre-Human  0.000000  0.00000  0.000000      0.0
+..    ...      ...  ...              ...       ...      ...       ...      ...
+112  2013        3   66       Post-Human  0.045455  0.02564  0.050254      7.0
+113  2014        0   60       Post-Human  0.000000  0.00000  0.000000      0.0
+114  2015        0   56       Post-Human  0.000000  0.00000  0.000000      0.0
+115  2016        0   49       Post-Human  0.000000  0.00000  0.000000      0.0
+116  2017        0   46       Post-Human  0.000000  0.00000  0.000000      0.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.2552
+     year  num_pos  all      frac Anthropogenicity
+0    1901        1    1  1.000000        Pre-Human
+1    1904        1    1  1.000000        Pre-Human
+2    1905        1    1  1.000000        Pre-Human
+3    1906        0    2  0.000000        Pre-Human
+4    1911        2    2  1.000000        Pre-Human
+..    ...      ...  ...       ...              ...
+103  2013        8    8  1.000000       Post-Human
+104  2014        2    5  0.400000       Post-Human
+105  2015       16   23  0.695652       Post-Human
+106  2016        1    2  0.500000       Post-Human
+107  2018        0    1  0.000000       Post-Human
+
+[108 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1901        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+1    1902        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+2    1903        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+3    1904        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+4    1905        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+112  2013       46   66       Post-Human  0.696970  0.056569  0.110875     53.0
+113  2014       41   60       Post-Human  0.683333  0.060054  0.117706     48.0
+114  2015       38   56       Post-Human  0.678571  0.062409  0.122321     45.0
+115  2016       33   49       Post-Human  0.673469  0.066992  0.131304     39.0
+116  2017       30   46       Post-Human  0.652174  0.070224  0.137639     36.0
+
+[117 rows x 8 columns]
+P-value (structured) = 0.0040
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        1    1  1.000000        Pre-Human
+2   1917        2    2  1.000000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        6    6  1.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        5    5  1.000000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        2    2  1.000000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        3    3        Pre-Human  1.000000  0.000000  0.000000      3.0
+1    1912        5    5        Pre-Human  1.000000  0.000000  0.000000      5.0
+2    1913        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+3    1914        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+4    1915       12   12        Pre-Human  1.000000  0.000000  0.000000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       20   23       Post-Human  0.869565  0.070224  0.137639     23.0
+98   2009       18   21       Post-Human  0.857143  0.076360  0.149666     21.0
+99   2010       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+100  2011       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+101  2012       15   16       Post-Human  0.937500  0.060515  0.118610     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.1285
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        1    1  1.000000        Pre-Human
+2   1917        2    2  1.000000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        6    6  1.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        5    5  1.000000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        1    2  0.500000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        3    3        Pre-Human  1.000000  0.000000  0.000000      3.0
+1    1912        5    5        Pre-Human  1.000000  0.000000  0.000000      5.0
+2    1913        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+3    1914        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+4    1915       12   12        Pre-Human  1.000000  0.000000  0.000000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       19   23       Post-Human  0.826087  0.079034  0.154907     22.0
+98   2009       17   21       Post-Human  0.809524  0.085689  0.167951     20.0
+99   2010       16   18       Post-Human  0.888889  0.074074  0.145185     18.0
+100  2011       16   18       Post-Human  0.888889  0.074074  0.145185     18.0
+101  2012       14   16       Post-Human  0.875000  0.082680  0.162052     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.2032
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        1    1  1.000000        Pre-Human
+2   1917        2    2  1.000000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        6    6  1.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        5    5  1.000000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        1    2  0.500000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        3    3        Pre-Human  1.000000  0.000000  0.000000      3.0
+1    1912        5    5        Pre-Human  1.000000  0.000000  0.000000      5.0
+2    1913        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+3    1914        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+4    1915       12   12        Pre-Human  1.000000  0.000000  0.000000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       19   23       Post-Human  0.826087  0.079034  0.154907     22.0
+98   2009       17   21       Post-Human  0.809524  0.085689  0.167951     20.0
+99   2010       16   18       Post-Human  0.888889  0.074074  0.145185     18.0
+100  2011       16   18       Post-Human  0.888889  0.074074  0.145185     18.0
+101  2012       14   16       Post-Human  0.875000  0.082680  0.162052     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.0990
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        1    1  1.000000        Pre-Human
+2   1917        2    2  1.000000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        6    6  1.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        5    5  1.000000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        2    2  1.000000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        3    3        Pre-Human  1.000000  0.000000  0.000000      3.0
+1    1912        5    5        Pre-Human  1.000000  0.000000  0.000000      5.0
+2    1913        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+3    1914        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+4    1915       12   12        Pre-Human  1.000000  0.000000  0.000000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       20   23       Post-Human  0.869565  0.070224  0.137639     23.0
+98   2009       18   21       Post-Human  0.857143  0.076360  0.149666     21.0
+99   2010       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+100  2011       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+101  2012       15   16       Post-Human  0.937500  0.060515  0.118610     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.3531
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        1    1  1.000000        Pre-Human
+2   1917        2    2  1.000000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        6    6  1.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        5    5  1.000000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        2    2  1.000000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        3    3        Pre-Human  1.000000  0.000000  0.000000      3.0
+1    1912        5    5        Pre-Human  1.000000  0.000000  0.000000      5.0
+2    1913        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+3    1914        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+4    1915       12   12        Pre-Human  1.000000  0.000000  0.000000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       20   23       Post-Human  0.869565  0.070224  0.137639     23.0
+98   2009       18   21       Post-Human  0.857143  0.076360  0.149666     21.0
+99   2010       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+100  2011       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+101  2012       15   16       Post-Human  0.937500  0.060515  0.118610     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.3400
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        1    1  1.000000        Pre-Human
+2   1917        2    2  1.000000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        6    6  1.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        5    5  1.000000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        2    2  1.000000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        3    3        Pre-Human  1.000000  0.000000  0.000000      3.0
+1    1912        5    5        Pre-Human  1.000000  0.000000  0.000000      5.0
+2    1913        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+3    1914        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+4    1915       12   12        Pre-Human  1.000000  0.000000  0.000000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       20   23       Post-Human  0.869565  0.070224  0.137639     23.0
+98   2009       18   21       Post-Human  0.857143  0.076360  0.149666     21.0
+99   2010       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+100  2011       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+101  2012       15   16       Post-Human  0.937500  0.060515  0.118610     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.1987
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        1    1  1.000000        Pre-Human
+2   1917        2    2  1.000000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        6    6  1.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        5    5  1.000000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        2    2  1.000000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        3    3        Pre-Human  1.000000  0.000000  0.000000      3.0
+1    1912        5    5        Pre-Human  1.000000  0.000000  0.000000      5.0
+2    1913        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+3    1914        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+4    1915       12   12        Pre-Human  1.000000  0.000000  0.000000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       20   23       Post-Human  0.869565  0.070224  0.137639     23.0
+98   2009       18   21       Post-Human  0.857143  0.076360  0.149666     21.0
+99   2010       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+100  2011       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+101  2012       15   16       Post-Human  0.937500  0.060515  0.118610     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.1354
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        1    1  1.000000        Pre-Human
+2   1917        2    2  1.000000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        6    6  1.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        5    5  1.000000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        2    2  1.000000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        3    3        Pre-Human  1.000000  0.000000  0.000000      3.0
+1    1912        5    5        Pre-Human  1.000000  0.000000  0.000000      5.0
+2    1913        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+3    1914        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+4    1915       12   12        Pre-Human  1.000000  0.000000  0.000000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       20   23       Post-Human  0.869565  0.070224  0.137639     23.0
+98   2009       18   21       Post-Human  0.857143  0.076360  0.149666     21.0
+99   2010       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+100  2011       17   18       Post-Human  0.944444  0.053990  0.105821     18.0
+101  2012       15   16       Post-Human  0.937500  0.060515  0.118610     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.2114
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        1    1  1.000000        Pre-Human
+2   1917        2    2  1.000000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        6    6  1.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        5    5  1.000000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        1    2  0.500000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        3    3        Pre-Human  1.000000  0.000000  0.000000      3.0
+1    1912        5    5        Pre-Human  1.000000  0.000000  0.000000      5.0
+2    1913        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+3    1914        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+4    1915       12   12        Pre-Human  1.000000  0.000000  0.000000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       19   23       Post-Human  0.826087  0.079034  0.154907     22.0
+98   2009       17   21       Post-Human  0.809524  0.085689  0.167951     20.0
+99   2010       16   18       Post-Human  0.888889  0.074074  0.145185     18.0
+100  2011       16   18       Post-Human  0.888889  0.074074  0.145185     18.0
+101  2012       14   16       Post-Human  0.875000  0.082680  0.162052     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.0011
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        1    1  1.000000        Pre-Human
+2   1917        2    2  1.000000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        6    6  1.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        5    5  1.000000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        1    2  0.500000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        3    3        Pre-Human  1.000000  0.000000  0.000000      3.0
+1    1912        5    5        Pre-Human  1.000000  0.000000  0.000000      5.0
+2    1913        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+3    1914        6    6        Pre-Human  1.000000  0.000000  0.000000      6.0
+4    1915       12   12        Pre-Human  1.000000  0.000000  0.000000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       18   23       Post-Human  0.782609  0.086006  0.168572     22.0
+98   2009       17   21       Post-Human  0.809524  0.085689  0.167951     20.0
+99   2010       16   18       Post-Human  0.888889  0.074074  0.145185     18.0
+100  2011       16   18       Post-Human  0.888889  0.074074  0.145185     18.0
+101  2012       14   16       Post-Human  0.875000  0.082680  0.162052     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.0098
+    year  num_pos  all  frac Anthropogenicity
+0   1911        1    2   0.5        Pre-Human
+1   1915        0    1   0.0        Pre-Human
+2   1917        1    2   0.5        Pre-Human
+3   1918        1    1   1.0        Pre-Human
+4   1920        3    6   0.5        Pre-Human
+..   ...      ...  ...   ...              ...
+66  2008        0    5   0.0       Post-Human
+67  2010        0    3   0.0       Post-Human
+68  2011        0    3   0.0       Post-Human
+69  2012        0    2   0.0       Post-Human
+70  2013        1    2   0.5       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        1    3        Pre-Human  0.333333  0.272166  0.533444      3.0
+1    1912        2    5        Pre-Human  0.400000  0.219089  0.429414      4.0
+2    1913        3    6        Pre-Human  0.500000  0.204124  0.400083      5.0
+3    1914        3    6        Pre-Human  0.500000  0.204124  0.400083      5.0
+4    1915        6   12        Pre-Human  0.500000  0.144338  0.282902      9.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008        5   23       Post-Human  0.217391  0.086006  0.168572      9.0
+98   2009        3   21       Post-Human  0.142857  0.076360  0.149666      6.0
+99   2010        2   18       Post-Human  0.111111  0.074074  0.145185      5.0
+100  2011        2   18       Post-Human  0.111111  0.074074  0.145185      5.0
+101  2012        2   16       Post-Human  0.125000  0.082680  0.162052      5.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.3254
+    year  num_pos  all      frac Anthropogenicity
+0   1911        0    2  0.000000        Pre-Human
+1   1915        0    1  0.000000        Pre-Human
+2   1917        0    2  0.000000        Pre-Human
+3   1918        0    1  0.000000        Pre-Human
+4   1920        0    6  0.000000        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        3    5  0.600000       Post-Human
+67  2010        2    3  0.666667       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        2    2  1.000000       Post-Human
+70  2013        1    2  0.500000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        0    3        Pre-Human  0.000000  0.000000  0.000000      0.0
+1    1912        0    5        Pre-Human  0.000000  0.000000  0.000000      0.0
+2    1913        0    6        Pre-Human  0.000000  0.000000  0.000000      0.0
+3    1914        0    6        Pre-Human  0.000000  0.000000  0.000000      0.0
+4    1915        0   12        Pre-Human  0.000000  0.000000  0.000000      0.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       16   23       Post-Human  0.695652  0.095944  0.188050     20.0
+98   2009       14   21       Post-Human  0.666667  0.102869  0.201623     18.0
+99   2010       13   18       Post-Human  0.722222  0.105572  0.206921     16.0
+100  2011       13   18       Post-Human  0.722222  0.105572  0.206921     16.0
+101  2012       12   16       Post-Human  0.750000  0.108253  0.212176     15.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.9888
+    year  num_pos  all      frac Anthropogenicity
+0   1911        1    2  0.500000        Pre-Human
+1   1915        0    1  0.000000        Pre-Human
+2   1917        0    2  0.000000        Pre-Human
+3   1918        0    1  0.000000        Pre-Human
+4   1920        1    6  0.166667        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        3    5  0.600000       Post-Human
+67  2010        0    3  0.000000       Post-Human
+68  2011        0    3  0.000000       Post-Human
+69  2012        0    2  0.000000       Post-Human
+70  2013        0    2  0.000000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        1    3        Pre-Human  0.333333  0.272166  0.533444      3.0
+1    1912        1    5        Pre-Human  0.200000  0.178885  0.350615      3.0
+2    1913        1    6        Pre-Human  0.166667  0.152145  0.298205      3.0
+3    1914        1    6        Pre-Human  0.166667  0.152145  0.298205      3.0
+4    1915        2   12        Pre-Human  0.166667  0.107583  0.210862      5.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008        5   23       Post-Human  0.217391  0.086006  0.168572      9.0
+98   2009        5   21       Post-Human  0.238095  0.092943  0.182168      9.0
+99   2010        5   18       Post-Human  0.277778  0.105572  0.206921      9.0
+100  2011        5   18       Post-Human  0.277778  0.105572  0.206921      9.0
+101  2012        3   16       Post-Human  0.187500  0.097578  0.191253      6.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.7046
+    year  num_pos  all      frac Anthropogenicity
+0   1911        2    2  1.000000        Pre-Human
+1   1915        0    1  0.000000        Pre-Human
+2   1917        1    2  0.500000        Pre-Human
+3   1918        1    1  1.000000        Pre-Human
+4   1920        5    6  0.833333        Pre-Human
+..   ...      ...  ...       ...              ...
+66  2008        4    5  0.800000       Post-Human
+67  2010        3    3  1.000000       Post-Human
+68  2011        3    3  1.000000       Post-Human
+69  2012        1    2  0.500000       Post-Human
+70  2013        2    2  1.000000       Post-Human
+
+[71 rows x 5 columns]
+     Year  num_pos  all Anthropogenicity      frac     error        se  ci_high
+0    1911        2    3        Pre-Human  0.666667  0.272166  0.533444      3.0
+1    1912        3    5        Pre-Human  0.600000  0.219089  0.429414      5.0
+2    1913        4    6        Pre-Human  0.666667  0.192450  0.377202      6.0
+3    1914        4    6        Pre-Human  0.666667  0.192450  0.377202      6.0
+4    1915        9   12        Pre-Human  0.750000  0.125000  0.245000     12.0
+..    ...      ...  ...              ...       ...       ...       ...      ...
+97   2008       15   23       Post-Human  0.652174  0.099311  0.194650     19.0
+98   2009       15   21       Post-Human  0.714286  0.098581  0.193218     19.0
+99   2010       15   18       Post-Human  0.833333  0.087841  0.172168     18.0
+100  2011       15   18       Post-Human  0.833333  0.087841  0.172168     18.0
+101  2012       13   16       Post-Human  0.812500  0.097578  0.191253     16.0
+
+[102 rows x 8 columns]
+P-value (structured) = 0.3728

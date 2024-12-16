@@ -1,0 +1,11 @@
+#!/bin/bash
+#SBATCH -c 12
+#SBATCH -N 1
+#SBATCH -t 0-10:00
+#SBATCH -p short
+#SBATCH --mem=5GB
+#SBATCH --output /n/data1/hms/dbmi/baym/arya/projects/project_microtrawler/post-analysis/figures-in-paper/figure-3c.out
+source /n/data1/hms/dbmi/baym/arya/miniconda/etc/profile.d/conda.sh
+conda activate RESIST
+
+python figure-3c.py

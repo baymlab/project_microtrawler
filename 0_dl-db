@@ -25,8 +25,6 @@ dl_nctc_db() {
     echo "$scriptdir/nctc/extract_dates $OUTPUTDIR/$NCTCNAME > $OUTPUTDIR/nctc_dates" >> $job
     echo "grep -v '\-1' $OUTPUTDIR/nctc_dates | tr -d ' ' > $OUTPUTDIR/nctc_dates_nonull" >> $job
     echo "cut -f1 $OUTPUTDIR/nctc_dates_nonull > $OUTPUTDIR/nctc_dates_nonull_onlystrain" >> $job
-    #echo "grep -v '\-1' $OUTPUTDIR/nctc_dates | tr -d ' ' | awk '{if(\$2<=1940){print \$0}}' > $OUTPUTDIR/nctc_ancient_strains" >> $job
-    #echo "cut -f1 $OUTPUTDIR/nctc_ancient_strains > $OUTPUTDIR/nctc_ancient_strains_nodate" >> $job
     echo $job
 }
 
@@ -75,7 +73,8 @@ main() {
 
     mkdir -p $OUTPUTDIR
     nctc_job=$(dl_nctc_db)
-    cip_job=$(dl_cip_db)
-    echo ""$(sbatch $nctc_job | cut -d' '  -f4)":"$(sbatch $cip_job | cut -d' '  -f4)""
+    echo "$(sbatch $nctc_job | cut -d' '  -f4)"
+    #cip_job=$(dl_cip_db)
+    #echo ""$(sbatch $nctc_job | cut -d' '  -f4)":"$(sbatch $cip_job | cut -d' '  -f4)""
 }
 main "$@"

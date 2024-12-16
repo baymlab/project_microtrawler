@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 wd=$(pwd)
 source ./paths
@@ -17,34 +17,139 @@ usage() {
 }
 
 build_files() {
+    rm -f $BASEOUTPUTDIR/input_fastas 2> /dev/null
     rm -f $BASEOUTPUTDIR/output_dirs 2> /dev/null
-    fd "*.fa" -a $INPUTDIR --glob | sort > $BASEOUTPUTDIR/input_fastas
-    for i in $(fd "*.fa" --base-directory $INPUTDIR --glob | sort)
-    do 
-        x=$(dirname $(dirname $i))
-        y=$(basename $i .fa)
-        echo "$BASEOUTPUTDIR/$x/$y" >> $BASEOUTPUTDIR/output_dirs
+    for i in $(fd "*.fa" --base-directory $INPUTDIR --glob | sort); do
+        linenum=$(echo "$(wc -l $INPUTDIR/$i)" | cut -d' ' -f1)
+        if [ ! $linenum -eq 0 ]; then
+            echo $INPUTDIR/$i >> $BASEOUTPUTDIR/input_fastas
+            x=$(dirname $(dirname $i))
+            y=$(basename $i .fa)
+            echo $BASEOUTPUTDIR/$x/$y >> $BASEOUTPUTDIR/output_dirs
+        fi
     done
 }
 
 build_files_strain() {
-    rm -f "$BASEOUTPUTDIR/output_$STRAIN-dirs" 2> /dev/null
     STRAIN=$1
+    STRAINNOSPACE=$(echo $1 | sed 's/ /_/g')
+    rm -f "$BASEOUTPUTDIR/output_$STRAINNOSPACE-dirs" 2> /dev/null
     awk -F'\t' -v s="$STRAIN" '{if(match($3, s)){print $0}}' $DBDIR/nctc_db.csv \
         | cut -f2 | tr -d ' ' | sed 's:^:/:g' | sed 's:$:/:g'\
-        > $BASEOUTPUTDIR/"acc_$STRAIN"
-    fd "*.fa" -a $INPUTDIR --glob | grep -f $BASEOUTPUTDIR/"acc_$STRAIN" \
-        | sort > "$BASEOUTPUTDIR/input_$STRAIN-fastas"
+        > $BASEOUTPUTDIR/"acc_$STRAINNOSPACE"
+    fd "*.fa" -a $INPUTDIR --glob | grep -f $BASEOUTPUTDIR/"acc_$STRAINNOSPACE" \
+        | sort > "$BASEOUTPUTDIR/input_$STRAINNOSPACE-fastas"
 
     for i in $(fd "*.fa" --base-directory $INPUTDIR --glob \
-        | grep -f $BASEOUTPUTDIR/"acc_$STRAIN" | sort)
+        | grep -f $BASEOUTPUTDIR/"acc_$STRAINNOSPACE" | sort)
     do
         x=$(dirname $(dirname $i))
         y=$(basename $i .fa)
-        echo "$BASEOUTPUTDIR/$x/$y" >> "$BASEOUTPUTDIR/output_$STRAIN-dirs"
+        echo "$BASEOUTPUTDIR/$x/$y" >> "$BASEOUTPUTDIR/output_$STRAINNOSPACE-dirs"
     done
 }
 
+create_prokka_jobs() {
+    mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
+    mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
+    jobctr=0
+    prokkactr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}"
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        output_basename="$outdir"/"$fasta_fname"_prokka
+        if [ -s "$output_basename"/"$fasta_fname"_prokka.gbk ]; then
+            log "PROKKA" "$fasta already analyzed! Skipping."
+        else
+            log "PROKKA" "Adding $fasta"
+            if [ $prokkactr -eq 0 ] || [ $prokkactr -eq $1 ]; then
+                prokkactr=1
+                job="$BASEOUTPUTDIR/jobs/FINDGENES_$jobctr-microtrawler.job"
+                cp $jobt_2 $job
+                sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-annotate" $job
+                echo "conda activate pangenome" >> $job
+                echo "export PERL5LIB=\$CONDA_PREFIX/lib/perl5/site_perl/5.22.0/" >> $job
+                ((jobctr++)) || true
+            fi
+            echo "prokka --prefix "$fasta_fname"_prokka --outdir $output_basename --cpus 0 "$fasta" --force" >> $job
+            echo "mkdir -p $output_basename/16S" >> $job
+            echo "cat "$output_basename/$fasta_fname"_prokka.ffn | seqkit grep -r -n -p \".*(16S ribosomal RNA)$\" >> $output_basename/16S/16srrna.fa" \
+                >> $job
+            echo "echo "Finished analyzing $fasta"" >> $job
+            ((prokkactr++)) || true
+        fi
+    done
+}
+
+create_bakta_jobs() {
+    mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
+    mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
+    jobctr=0
+    baktactr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}"
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        output_basename="$outdir"/"$fasta_fname"_bakta
+        #if [ -s "$output_basename"/"$fasta_fname"_bakta.gbff ]; then
+            #log "BAKTA" "$fasta already analyzed! Skipping."
+        #else
+            log "BAKTA" "Adding $fasta"
+            if [ $baktactr -eq 0 ] || [ $baktactr -eq $1 ]; then
+                baktactr=1
+                job="$BASEOUTPUTDIR/jobs/FINDGENES-BAKTA_$jobctr-microtrawler.job"
+                cp $jobt_2 $job
+                sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-annotate" $job
+                sed -i "s/#SBATCH --mem=8GB/#SBATCH --mem=20GB/" $job
+                echo "source /n/data1/hms/dbmi/baym/arya/miniconda/etc/profile.d/conda.sh" >> $job
+                ((jobctr++)) || true
+            fi
+            echo "conda activate denovo-mtbc" >> $job
+            echo "bakta -d /n/data1/hms/dbmi/baym/databases/bakta_dbv5/db --prefix "$fasta_fname"_bakta --output $output_basename "$fasta"" >> $job
+            echo "conda activate RESIST" >> $job
+            echo "PhiSpy.py $output_basename/"$fasta_fname"_bakta.gbff -o $outdir/phispy" >> $job
+            echo "echo "Finished analyzing $fasta"" >> $job
+            ((baktactr++)) || true
+        #fi
+    done
+}
+
+create_mgefinder_jobs() {
+    mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
+    mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
+    jobctr=0
+    mgectr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}"
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        #output_basename="$outdir"/"$fasta_fname"_pro
+        output_basename="$outdir"/"$fasta_fname"-mgefinder
+        mkdir -p $output_basename
+        output_basename=$output_basename/mge_results
+        if [ -s "$output_basename.csv" ]; then
+            log "MGE" "$fasta already analyzed! Skipping."
+        else
+            log "MGE" "Adding $fasta"
+            if [ $mgectr -eq 0 ] || [ $mgectr -eq $1 ]; then
+                mgectr=1
+                job="$BASEOUTPUTDIR/jobs/FINDMGE_$jobctr-microtrawler.job"
+                cp $jobt_2 $job
+                sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-mgefinder" $job
+                echo "conda activate andrew" >> $job
+                echo "module load blast/2.10.1+" >> $job
+                ((jobctr++)) || true
+            fi
+            echo "python $tooldir/mge_finder/mobileElementFinder.py find -c $fasta --temp-dir $(dirname $output_basename)/tmp-mge $output_basename" >> $job
+            echo "echo "Finished analyzing $fasta"" >> $job
+            ((mgectr++)) || true
+        fi
+    done
+}
 
 create_rgi_jobs() {
     mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
@@ -72,11 +177,12 @@ create_rgi_jobs() {
                     mkdir -p $BASEOUTPUTDIR/data/rgi
                     tar -xvf $BASEOUTPUTDIR/carddb --directory $BASEOUTPUTDIR/data/rgi
                 fi" >> $job
+                echo "rgi clean" >> $job
                 echo "rgi load --card_json $BASEOUTPUTDIR/data/rgi/card.json" >> $job
                 ((jobctr++)) || true
             fi
             echo "rgi main -i "$fasta" -o "$output_basename".rgi_out --input_type contig --exclude_nudge --clean --split_prodigal_jobs -n 12" >> $job
-            echo ""$fasta" > $outdir/fasta_analyzed" >> $job
+            echo "echo "$fasta" > $outdir/fasta_analyzed" >> $job
             echo "echo "Finished analyzing $fasta"" >> $job
             ((rgictr++)) || true
         fi
@@ -132,9 +238,94 @@ create_plasmidfinder_jobs() {
                 sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-find-plasmids" $job
                 ((jobctr++)) || true
             fi
-            echo "plasmidfinder.py -i $fasta -o $outdir" >> $job
+            echo "plasmidfinder.py -i $fasta -o $outdir -x" >> $job
             echo "echo "Finished analyzing $fasta"" >> $job
             ((plasmidctr++)) || true
+        fi
+    done
+}
+
+create_mob_jobs() {
+    mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
+    mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
+    jobctr=0
+    mobctr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}/mob_out"
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        if [ -s "$outdir"/contig_report.txt ]; then
+            log "mob_suite" "$fasta already analyzed! Skipping."
+        else
+            log "mob_suite" "Adding $fasta"
+            if [ $mobctr -eq 0 ] || [ $mobctr -eq $1 ]; then
+                mobctr=1
+                job="$BASEOUTPUTDIR/jobs/TYPEPLASMIDS_$jobctr-microtrawler.job"
+                cp $jobt_2 $job
+                sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-find-plasmids_mob" $job
+                echo "conda activate moblife" >> $job
+                ((jobctr++)) || true
+            fi
+            echo "mob_recon --infile $fasta --outdir $outdir --force --num_threads 4" >> $job
+            echo "echo "Finished analyzing $fasta"" >> $job
+            ((mobctr++)) || true
+        fi
+    done
+}
+
+create_refseq_jobs() {
+    mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
+    mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
+    jobctr=0
+    refseqctr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}"
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        if [ -s "$outdir"/refseq_matches ]; then
+            log "Refseq_masher" "$fasta already analyzed! Skipping."
+        else
+            log "Refseq_masher" "Adding $fasta"
+            if [ $refseqctr -eq 0 ] || [ $refseqctr -eq $1 ]; then
+                refseqctr=1
+                job="$BASEOUTPUTDIR/jobs/FINDID_$jobctr-microtrawler.job"
+                cp $jobt_2 $job
+                sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-find-identity" $job
+                ((jobctr++)) || true
+            fi
+            echo "refseq_masher matches $fasta > $outdir/refseq_matches" >> $job
+            echo "echo "Finished analyzing $fasta"" >> $job
+            ((refseqctr++)) || true
+        fi
+    done
+}
+
+create_RNAfinding_jobs() {
+    mapfile -t fasta_input_list < $BASEOUTPUTDIR/input_fastas
+    mapfile -t output_dir_list < $BASEOUTPUTDIR/output_dirs
+    jobctr=0
+    rnactr=0
+    for i in "${!fasta_input_list[@]}"; do
+        outdir="${output_dir_list[i]}"/16S
+        mkdir -p "$outdir"
+        fasta="${fasta_input_list[i]}"
+        fasta_fname="$(basename $fasta .fa)"
+        if [ -s "$outdir"/16srrna.fa ]; then
+            log "16S" "$fasta already analyzed! Skipping."
+        else
+            log "16S" "Adding $fasta"
+            if [ $rnactr -eq 0 ] || [ $rnactr -eq $1 ]; then
+                rnactr=1
+                job="$BASEOUTPUTDIR/jobs/FIND16SRRNA_$jobctr-microtrawler.job"
+                cp $jobt_2 $job
+                sed -i "2i #SBATCH -o $BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$jobctr-find-16SRRNA" $job
+                ((jobctr++)) || true
+            fi
+            echo "cat $fasta | seqkit grep -r -n -p \".*(16S ribosomal RNA)$\" >> $outdir/16srrna.fa" >> $job
+            echo "echo "Finished analyzing $fasta"" >> $job
+            ((rnactr++)) || true
         fi
     done
 }
@@ -168,9 +359,10 @@ create_crispr_jobs() {
 
 create_mlplasmids_jobs() {
     STRAIN=$1
+    STRAINNOSPACE=$(echo $1 | sed 's/ /_/g')
     build_files_strain "$STRAIN"
-    mapfile -t fasta_input_list < "$BASEOUTPUTDIR/input_$STRAIN-fastas"
-    mapfile -t output_dir_list < "$BASEOUTPUTDIR/output_$STRAIN-dirs"
+    mapfile -t fasta_input_list < "$BASEOUTPUTDIR/input_$STRAINNOSPACE-fastas"
+    mapfile -t output_dir_list < "$BASEOUTPUTDIR/output_$STRAINNOSPACE-dirs"
     jobctr=0
     plasmidctr=0
     for i in "${!fasta_input_list[@]}"; do
@@ -182,8 +374,8 @@ create_mlplasmids_jobs() {
             log "mlplasmid" "$fasta already analyzed! Skipping."
         else
             log "mlplasmid" "Adding $fasta"
-            job="$BASEOUTPUTDIR/jobs/FINDMLPLAMIDS_$STRAIN-microtrawler.job"
-            [ ! -s "$job" ] && (cp $jobt_2 "$job"; sed -i "2i #SBATCH -o "$BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_\'$STRAIN\'-find-plasmids"" "$job")
+            job="$BASEOUTPUTDIR/jobs/FINDMLPLAMIDS_$STRAINNOSPACE-microtrawler.job"
+            [ ! -s "$job" ] && (cp $jobt_2 "$job"; sed -i "2i #SBATCH -o "$BASEOUTPUTDIR/jobs/outputs/JOBOUTPUT_$STRAINNOSPACE-find-plasmids"" "$job")
             echo "module load gcc; module load R/3.6.1.lua" >> "$job"
             echo "Rscript $tooldir/mlplasmids/scripts/run_mlplasmids.R $fasta $outdir/mlplasmids_out.tab 0.7 '$STRAIN'" >> "$job"
             echo "echo "Finished analyzing $fasta"" >> "$job"
@@ -248,20 +440,26 @@ main() {
     esac
     done
 
-    rm -r "$BASEOUTPUTDIR/jobs" 2> /dev/null
+    rm -rf "$BASEOUTPUTDIR/jobs" 2> /dev/null
     mkdir -p "$BASEOUTPUTDIR/jobs/outputs"
 
     log "Building files..."
     build_files
     log "Built files"
-    create_rgi_jobs $COMMANDS
+    #create_rgi_jobs $COMMANDS
+    #create_mob_jobs $COMMANDS
     #create_integron_jobs $COMMANDS
     #create_crispr_jobs $COMMANDS
-    #create_plasmid_jobs $COMMANDS
+    #create_plasmidfinder_jobs $COMMANDS
     #for i in "Klebsiella pneumoniae" "Escherichia coli" "Enterococcus faecium" "Enterococcus faecalis" "Acinetobacter baumannii"
     #do
         #create_mlplasmids_jobs "$i" $COMMANDS
     #done
-    #submit_jobs
+    #create_prokka_jobs $COMMANDS
+    #create_refseq_jobs $COMMANDS
+    #create_RNAfinding_jobs $COMMANDS
+    #create_mgefinder_jobs $COMMANDS
+    create_bakta_jobs $COMMANDS
+    submit_jobs
 }
 main "$@"

@@ -19,8 +19,6 @@ merge_integron_output() {
     echo -e "Acc_Num\tAssembly_Num\tID_integron\tContig\telement\tst\ten\tstrand\teval\ttype_elt\tannotation\tmodel\ttype\tdefault\tdistance_2attC\tconsidered_topology" > $OUTPUTDIR/merged-integrons
     log "Merging integron output"
     for i in $(fd -e '.integrons' --base-directory $INPUTDIR/NCTC/ena --exact-depth=5); do
-    #for i in $INPUTDIR/NCTC/ena/NCTC*/*/integrons/Results_Integron_Finder*/*.integrons; do
-        #echo $i
         accnum=$(basename $(dirname $(dirname $(dirname $(dirname $i)))))
         assembly=$(basename $i .integrons)
         #echo $accnum
@@ -75,5 +73,7 @@ main() {
 
     mkdir -p $OUTPUTDIR
     merge_integron_output
+    intersect_integron_resistance
 }
+
 main "$@"
