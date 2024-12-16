@@ -1,0 +1,182 @@
+#!/bin/bash -e
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -i,--inputdir : input directory of output from step 1. default is 
+                    /n/scratch3/users/a/ak586/microtrawler/1_sequences
+    --dbdir : input directory of output from step 0. default is 
+                    /n/scratch3/users/a/ak586/microtrawler/0_databases
+    -o,--outputdir: base output directory for rgi. default is 
+                    /n/scratch3/users/a/ak586/microtrawler/4_straingenespecific
+    "
+}
+
+build_files_strain() {
+    STRAIN="$1"
+    STRAIN_nospace=$(echo "$STRAIN" | sed 's/|/-/g' | sed 's/ /_/g')
+    cut -f2,3 $DBDIR/nctc_db.csv | grep -E "$STRAIN" | cut -f1 \
+        | sed 's/ //' > $BASEOUTPUTDIR/
+    #STRAIN="$1"
+
+    #mkdir -p $BASEOUTPUTDIR/$STRAIN_nospace
+
+    #awk -F'\t' -v s="$STRAIN" '{if(match($3, s)){print $0}}' $DBDIR/nctc_db.csv \
+        #| cut -f2 | tr -d ' ' | sed 's:^:/:g' | sed 's:$:/:g'\
+        #> $BASEOUTPUTDIR/$STRAIN_nospace/"acc_$STRAIN_nospace"
+
+    #fd "*.fa" -a $INPUTDIR --glob | grep -f $BASEOUTPUTDIR/$STRAIN_nospace/"acc_$STRAIN_nospace" \
+        #| sort > "$BASEOUTPUTDIR/$STRAIN_nospace/input_$STRAIN_nospace-fastas"
+
+    #comm -23 <(cat "$BASEOUTPUTDIR/$STRAIN_nospace/input_$STRAIN_nospace-fastas" | cut -f11 -d'/' | sort | uniq) \
+        #<(for i in $INPUTDIR/NCTC/ena/*/*/refseq_matches; do sed 1d $i | sort -k4g -k3n -t $'\t' | head -3 | grep -q "$STRAIN" && echo $i; done | cut -d'/' -f11 | sort | uniq) \
+        #> $BASEOUTPUTDIR/$STRAIN_nospace/nonmatchinggenomes
+}
+
+make_job() {
+    STRAIN=$1
+    STRAIN_nospace=$(echo "$STRAIN" | sed 's/ /_/g')
+    curr_gbk=$2
+    mkdir -p "$BASEOUTPUTDIR/$STRAIN_nospace/jobs"
+    job="$BASEOUTPUTDIR/$STRAIN_nospace/jobs/ANALYZE-SELECTION_"$STRAIN_nospace".job"
+    cp $jobt_4 $job
+    sed -i "2i #SBATCH -o $BASEOUTPUTDIR/$STRAIN_nospace/jobs/JOBOUTPUT_$STRAIN_nospace-aligngenes" $job
+    build_files_strain "$STRAIN"
+    cat "$BASEOUTPUTDIR/$STRAIN_nospace/input_$STRAIN_nospace-fastas" | grep -v -w -f $BASEOUTPUTDIR/$STRAIN_nospace/nonmatchinggenomes | \
+    while read -r i; do 
+        echo "makeblastdb -dbtype nucl -in $i" >> $job
+        acc=$(basename $(dirname $(dirname $i)))
+        ass=$(basename $i .fa)
+        for g in ${GENES//,/ }; do
+            gdir="$BASEOUTPUTDIR/$STRAIN_nospace/genes/$g"
+            rm -rf $gdir 2> /dev/null
+            mkdir -p "$gdir"
+            gfa="$gdir/ref_$g.fa"
+            if [ -s $gfa ] || ! grep -q "find_genes_in_gbk.py -i $curr_gbk -g $g" $job; then
+                echo "python $tooldir/find_genes_in_gbk.py -i $curr_gbk -g $g > $gfa" >> $job
+            fi
+            touch $gdir/hits.fa
+            if ! grep -q "$acc:$ass" $gdir/hits.fa; then
+                echo "blastn -max_target_seqs 1 -query $gfa -db $i -outfmt '6 sseqid sseq' | awk -F' ' -v ac=$acc -v as=$ass '{printf \">%s:%s:%s\n%s\n\", \$1,ac,as,\$2}' >> $gdir/hits.fa" >> $job
+            fi
+        done
+    done
+
+    for g in ${GENES//,/ }; do
+        gdir="$BASEOUTPUTDIR/$STRAIN_nospace/genes/$g"
+        echo "mafft --auto $gdir/hits.fa > $gdir/$STRAIN_nospace-$g-aln.fa" >> $job
+        echo "hyphy rmv Universal $gdir/$STRAIN_nospace-$g-aln.fa 'Yes/No' $gdir/$STRAIN_nospace-$g-aln-cleaned.fa" >> $job
+        echo "mkdir -p $gdir/tree" >> $job
+        #echo "iqtree -s $gdir/$STRAIN_nospace-$g-aln-cleaned.fa --prefix $gdir/tree/$STRAIN_nospace-$g -st CODON" >> $job
+        if [ "$(wc -l $BASEOUTPUTDIR/$STRAIN_nospace/input_$STRAIN_nospace-fastas | cut -f1 -d' ')" -lt "30" ]; then
+            echo "hyphy meme --code Universal --alignment $gdir/$STRAIN_nospace-$g-aln-cleaned.fa --branches All --pvalue 0.1 --resample 1 --tree $gdir/tree/$STRAIN_nospace-$g.treefile" >> $job
+        else
+            echo "hyphy meme --code Universal --alignment $gdir/$STRAIN_nospace-$g-aln-cleaned.fa --branches All --pvalue 0.1 --tree $gdir/tree/$STRAIN_nospace-$g.treefile" >> $job
+        fi
+    done
+}
+
+submit_jobs() {
+    joblist=""
+    if [ -z $DEPENDENCY ]; then
+        for j in $(fd -a "ANALYZE-SELECTION_*.job" --glob $BASEOUTPUTDIR); do
+            jobid=$(sbatch "$j" | cut -d' ' -f4)
+            joblist+="$jobid:"
+        done
+    else
+        for j in $(fd -a "ANALYZE-SELECTION_*.job" --glob $BASEOUTPUTDIR); do
+            jobid=$(sbatch --dependency=afterok:"$DEPENDENCY" "$j" | cut -d' ' -f4)
+            joblist+="$jobid:"
+        done
+    fi
+    echo $joblist
+}
+
+main() {
+    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/1_sequences"
+    BASEOUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/4_straingenespecific"
+    DBDIR="/n/scratch3/users/a/ak586/microtrawler/0_databases"
+    GENES="gyrA,gyrB,parC,parE"
+    for i in "$@"; do
+    case $i in
+        -i|--inputdir)
+        INPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -o|--outputdir)
+        BASEOUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -g|--genes)
+        GENES="$2"
+        shift
+        shift
+        ;;
+        -d|--dependency)
+        DEPENDENCY="$2"
+        shift
+        shift
+        ;;
+        --dbdir)
+        DBDIR="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+
+    rm -rf "$BASEOUTPUTDIR/jobs" 2> /dev/null
+
+    log "Analyzing $GENES"
+    #for i in "Klebsiella pneumoniae" "Escherichia coli" "Enterococcus faecium" "Enterococcus faecalis" "Acinetobacter baumannii" \
+        #"Staphylococcus aureus" "Pseudomonas aeruginosa" "Salmonella enterica"
+    #for i in "Staphylococcus aureus"
+    for i in "Salmonella enterica"
+    do
+        case "$i" in
+            "Klebsiella pneumoniae")
+            GBK=$KlebGBK
+            ;;
+            "Escherichia coli")
+            GBK=$K12GBK
+            ;;
+            "Enterococcus faecium")
+            GBK=$FaeciumGBK
+            ;;
+            "Enterococcus faecalis")
+            GBK=$FaecalisGBK
+            ;;
+            "Acinetobacter baumannii")
+            GBK=$ActBaumanniiGBK
+            ;;
+            "Salmonella enterica")
+            GBK=$SalmGBK
+            ;;
+            "Staphylococcus aureus")
+            GBK=$StaphGBK
+            ;;
+            "Pseudomonas aeruginosa")
+            GBK=$PseudAerugGBK
+            ;;
+            *)
+            GBK=$K12GBK
+            ;;
+        esac
+        log "Making job for '$i'"
+        log "Using $GBK"
+        make_job "Salmonella" "$GBK"
+   done
+   submit_jobs
+}
+main "$@"

@@ -1,0 +1,118 @@
+#!/bin/bash -ex
+
+wd=$(pwd)
+source ./paths
+source ./funcs
+
+usage() {
+    echo "
+    -i,--inputdir : input directory of output from step 2. 
+            default is /n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs
+    -o,--outputdir: base output directory for prophages. 
+        default is /n/scratch3/users/a/ak586/microtrawler/3_analysis-phispy
+    "    
+}
+
+merge_phispy_output() {
+    rm -f $OUTPUTDIR/merged-prophage_coordinates.bed 2> /dev/null
+    rm -f $OUTPUTDIR/merged-mobtyper 2> /dev/null
+    for i in $INPUTDIR/NCTC/ena/*/*/mob_out/contig_report.txt; do
+        #echo $i
+        accnum=$(basename $(dirname $(dirname $(dirname $i))))
+        if [ ! -s $OUTPUTDIR/merged-contigreport ]; then
+            head -1 $i | sed 's/^/AccNum\t/'> $OUTPUTDIR/merged-contigreport
+        fi
+        grep 'plasmid' $i | sed "s/^/$accnum\t/" >> $OUTPUTDIR/merged-contigreport
+    done
+    for i in $INPUTDIR/NCTC/ena/*/*/mob_out/mobtyper_results.txt; do
+        accnum=$(basename $(dirname $(dirname $(dirname $i))))
+        if [ ! -s $OUTPUTDIR/merged-mobtyper ]; then
+            head -1 $i | sed 's/^/AccNum\t/' > $OUTPUTDIR/merged-mobtyper
+        fi
+        count=$(echo $(wc -l $i) |awk '{print $1}')
+        if [ $count -eq 1 ]; then
+            echo $i
+            exit
+        fi
+        sed 1d $i | sed "s/^/$accnum\t/" >> $OUTPUTDIR/merged-mobtyper
+    done
+
+}
+merge_mlplasmid_output() {
+    STRAIN="$1"
+    STRAINNOSPACE=$(echo $1 | sed 's/ /_/g')
+    echo -e "AccNum\tProb_Chrom\tProb_Plasmid\tPrediction\tContig_name\tContig_len" > "$OUTPUTDIR/merged-$STRAINNOSPACE-mlplasmidout"
+    while read -r i; do
+        acc=$(basename $(dirname $i))
+        sed 1d $i/plasmid/mlplasmids_out.tab | sed "s:^:$acc\t:g" >> "$OUTPUTDIR/merged-$STRAINNOSPACE-mlplasmidout"
+    done<"$INPUTDIR/output_$STRAINNOSPACE-dirs"
+}
+
+merge_plasmidfinder_output() {
+    echo -e "AccNum\tDatabase\tPlasmidGroup\tIdentity\tQ/TLen\tContig\tPosition\tNote\tDBAcc" > $OUTPUTDIR/merged-plasmidfinder
+    for i in $INPUTDIR/NCTC/ena/*/*/plasmid; do 
+        acc=$(basename $(dirname $(dirname $i)))
+        #cat $i/results_tab.tsv
+        sed 1d $i/results_tab.tsv | awk -F'\t' 'BEGIN { OFS = "\t" } {print $1,$2,$3,$4,$5,$6,$7,$8}' | sed "s:^:$acc\t:g" >> "$OUTPUTDIR/merged-plasmidfinder"
+    done
+}
+
+merge_mob_output() {
+    rm -f $OUTPUTDIR/merged-contigreport 2> /dev/null
+    rm -f $OUTPUTDIR/merged-mobtyper 2> /dev/null
+    for i in $INPUTDIR/NCTC/ena/*/*/mob_out/contig_report.txt; do
+        #echo $i
+        accnum=$(basename $(dirname $(dirname $(dirname $i))))
+        if [ ! -s $OUTPUTDIR/merged-contigreport ]; then
+            head -1 $i | sed 's/^/AccNum\t/'> $OUTPUTDIR/merged-contigreport
+        fi
+        grep 'plasmid' $i | sed "s/^/$accnum\t/" >> $OUTPUTDIR/merged-contigreport
+    done
+    for i in $INPUTDIR/NCTC/ena/*/*/mob_out/mobtyper_results.txt; do
+        accnum=$(basename $(dirname $(dirname $(dirname $i))))
+        if [ ! -s $OUTPUTDIR/merged-mobtyper ]; then
+            head -1 $i | sed 's/^/AccNum\t/' > $OUTPUTDIR/merged-mobtyper
+        fi
+        count=$(echo $(wc -l $i) |awk '{print $1}')
+        if [ $count -eq 1 ]; then
+            echo $i
+            exit
+        fi
+        sed 1d $i | sed "s/^/$accnum\t/" >> $OUTPUTDIR/merged-mobtyper
+    done
+
+}
+
+main() {
+    INPUTDIR="/n/scratch3/users/a/ak586/microtrawler/2_analyze-seqs"
+    OUTPUTDIR="/n/scratch3/users/a/ak586/microtrawler/3_analysis-plasmid"
+    for i in "$@"; do
+    case $i in
+        -i|--inputdir)
+        INPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -o|--outputdir)
+        OUTPUTDIR="$2"
+        shift
+        shift
+        ;;
+        -h|--help)
+        usage
+        exit
+        ;;
+        *)
+        ;;
+    esac
+    done
+
+    mkdir -p $OUTPUTDIR
+    #merge_plasmidfinder_output
+    merge_mob_output
+    #for i in "Klebsiella pneumoniae" "Escherichia coli" "Enterococcus faecium" "Enterococcus faecalis" "Acinetobacter baumannii"
+    #do
+        #merge_mlplasmid_output "$i"
+    #done
+}
+main "$@"

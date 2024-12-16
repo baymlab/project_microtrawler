@@ -74,19 +74,19 @@ main() {
     for i in $INPUTDIR/*_dates_nonull_onlystrain; do
         DB="$(upper $(echo $(basename $i) | cut -f1 -d'_'))"
 
-        job_genbank=$(dl_genbank $DB $i)
+        #job_genbank=$(dl_genbank $DB $i)
         job_ena=$(dl_ena $DB $i)
-        job_refseq=$(dl_refseq $DB $i)
+        #job_refseq=$(dl_refseq $DB $i)
 
         if [ ! -z $DEPENDENCY ]; then
-            jobid_genbank="$(sbatch --dependency=afterok:"$DEPENDENCY" $job_genbank | cut -f4 -d' ')"
+            #jobid_genbank="$(sbatch --dependency=afterok:"$DEPENDENCY" $job_genbank | cut -f4 -d' ')"
             jobid_ena="$(sbatch --dependency=afterok:"$DEPENDENCY"  $job_ena | cut -f4 -d' ')"
-            jobid_refseq="$(sbatch --dependency=afterok:"$DEPENDENCY" $job_refseq | cut -f4 -d' ')"
+            #jobid_refseq="$(sbatch --dependency=afterok:"$DEPENDENCY" $job_refseq | cut -f4 -d' ')"
 
         else
-            jobid_genbank="$(sbatch $job_genbank | cut -f4 -d' ')"
+            #jobid_genbank="$(sbatch $job_genbank | cut -f4 -d' ')"
             jobid_ena="$(sbatch $job_ena | cut -f4 -d' ')"
-            jobid_refseq="$(sbatch $job_refseq | cut -f4 -d' ')"
+            #jobid_refseq="$(sbatch $job_refseq | cut -f4 -d' ')"
         fi
         joblist+="$jobid_genbank:"
         joblist+="$jobid_ena:"
